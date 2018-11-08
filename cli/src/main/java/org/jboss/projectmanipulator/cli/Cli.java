@@ -49,7 +49,7 @@ public class Cli {
 
     private ManipulationSession session;
 
-    private ManipulationManager manipulationManager;
+    private ManipulationManager manipulationManager = new ManipulationManager();
 
     /** Project file to operate against. */
     private File target = new File(System.getProperty("user.dir"), "package.json");
@@ -142,7 +142,7 @@ public class Cli {
         }
 
         if (!target.exists()) {
-            logger.info("Manipulation engine disabled. Project {} cannot be found.", target);
+            logger.info("Project Manipulation failed. File {} cannot be found.", target);
             return 10;
         }
 

@@ -18,6 +18,7 @@
 package org.jboss.projectmanipulator.core;
 
 import java.util.List;
+import java.util.Properties;
 
 public interface ManipulationSession {
 
@@ -25,8 +26,9 @@ public interface ManipulationSession {
      * Provides active manipulators for current session based on provided parameters.
      *
      * @return ordered list of active manipulators
+     * @throws ManipulationException in case of an error during initialization
      */
-    List<Manipulator> getActiveManipulators();
+    List<Manipulator> getActiveManipulators() throws ManipulationException;
 
     /**
      * Provides the list of project files that will be manipulated.
@@ -34,5 +36,16 @@ public interface ManipulationSession {
      * @return list of project files
      */
     List<Project> getProjects();
+
+    /**
+     * Provides java properties passed on command line.
+     *
+     * @return parsed properties
+     */
+    Properties getUserProps();
+
+    void setState(String key, Object state);
+
+    <T> T getState(String key, Class<T> cls);
 
 }

@@ -32,9 +32,8 @@ public class ManipulationException extends Exception {
         this.params = params;
     }
 
-    public ManipulationException(final String string, final String... params) {
-        super(string);
-        this.params = params;
+    public ManipulationException(final String string, final Object... params) {
+        this(string, null, params);
     }
 
     @Override

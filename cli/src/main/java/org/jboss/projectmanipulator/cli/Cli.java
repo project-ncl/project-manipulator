@@ -33,7 +33,7 @@ import org.apache.commons.cli.ParseException;
 import org.jboss.projectmanipulator.core.ManipulationException;
 import org.jboss.projectmanipulator.core.ManipulationManager;
 import org.jboss.projectmanipulator.core.ManipulationSession;
-import org.jboss.projectmanipulator.npm.ManipulationSessionNpmFactory;
+import org.jboss.projectmanipulator.npm.NpmManipulationSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -64,8 +64,10 @@ public class Cli {
     public int run(String[] args) {
         Options options = new Options();
         options.addOption("h", false, "Print this help message.");
+        options.addOption(Option.builder("t").longOpt("type").desc("The project type. Can be only NPM for now and is "
+                + "not mandatory. It is not case-sensitive.").build());
         options.addOption(Option.builder("d").longOpt("debug").desc("Enable debug").build());
-        options.addOption(Option.builder("t").longOpt("trace").desc("Enable trace").build());
+        options.addOption(Option.builder("r").longOpt("trace").desc("Enable trace").build());
         options.addOption(Option.builder("h").longOpt("help").desc("Print help").build());
         options.addOption(
                 Option.builder("f").longOpt("file").hasArgs().numberOfArgs(1).desc("Project definition file").build());
@@ -137,7 +139,7 @@ public class Cli {
         if (cmd.hasOption('d')) {
             root.setLevel(Level.DEBUG);
         }
-        if (cmd.hasOption('t')) {
+        if (cmd.hasOption('r')) {
             root.setLevel(Level.TRACE);
         }
 
@@ -150,7 +152,7 @@ public class Cli {
             manipulationManager.init(session);
             manipulationManager.scanAndApply(session);
         } catch (ManipulationException ex) {
-            logger.error("Project Manipulation failed; original error is {}", ex.getMessage());
+            logger.error("Project Manipulation failed; original error is: {}", ex.getMessage());
             logger.debug("Project Manipulation error trace is", ex);
             return 10;
         } catch (Exception ex) {
@@ -161,6 +163,6 @@ public class Cli {
     }
 
     private void createSession(File target) {
-        session = ManipulationSessionNpmFactory.createSession(target, System.getProperties(), userProps);
+        session = NpmManipulationSessionFactory.createSession(target, System.getProperties(), userProps);
     }
 }

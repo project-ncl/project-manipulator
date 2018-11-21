@@ -17,6 +17,7 @@
  */
 package org.jboss.projectmanipulator.npm;
 
+import org.jboss.projectmanipulator.core.ManipulationException;
 import org.jboss.projectmanipulator.core.ManipulationSession;
 import org.jboss.projectmanipulator.core.Manipulator;
 import org.jboss.projectmanipulator.core.Project;
@@ -25,28 +26,43 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-public class ManipulationSessionNpm implements ManipulationSession {
+public class NpmManipulationSession implements ManipulationSession {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Properties properties;
     private File pkg;
     private Properties userProps;
+    private List<Manipulator> manipulators;
+    private final Map<String, Object> states = new HashMap<>();
 
-    public ManipulationSessionNpm(File pkg, Properties properties, Properties userProps) {
+    public NpmManipulationSession(File pkg, Properties properties, Properties userProps) {
         this.pkg = pkg;
         this.properties = properties;
         this.userProps = userProps;
     }
 
     @Override
-    public List<Manipulator> getActiveManipulators() {
-        List<Manipulator> result = new ArrayList<>(1);
-        // result.add(new NpmProjectVersionManipulator());
-        return result;
+    public List<Manipulator> getActiveManipulators() throws ManipulationException {
+        if (manipulators == null) {
+            manipulators = new ArrayList<>();
+
+            Manipulator[] allManipulators = new Manipulator[] {
+                    new NpmPackageVersionManipulator(),
+                    new DAVersionsCollector()
+            };
+            for (Manipulator manipulator : allManipulators) {
+                if (manipulator.init(this)) {
+                    manipulators.add(manipulator);
+                }
+            }
+        }
+        return manipulators;
     }
 
     @Override
@@ -76,10 +92,16 @@ public class ManipulationSessionNpm implements ManipulationSession {
                 packageFile = new File(packageDirPath + File.separator + "package.json");
             }
             if (packageLock == null) {
-                packageFile = new File(packageDirPath + File.separator + "package-lock.json");
+                packageLock = new File(packageDirPath + File.separator + "npm-shrinkwrap.json");
+                if (!packageLock.exists()) {
+                    packageLock = new File(packageDirPath + File.separator + "package-lock.json");
+                    if (!packageLock.exists()) {
+                        packageLock = null;
+                    }
+                }
             }
 
-            result.add(new NpmProject(packageFile, packageLock));
+            result.add(new NpmPackage(packageFile, packageLock));
         } else {
             logger.error("Given package path %s does not exist.", pkg);
         }
@@ -95,8 +117,20 @@ public class ManipulationSessionNpm implements ManipulationSession {
         return pkg;
     }
 
+    @Override
     public Properties getUserProps() {
         return userProps;
+    }
+
+    @Override
+    public void setState(String key, Object state) {
+        states.put(key, state);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getState(String key, Class<T> cls) {
+        return (T) states.get(key);
     }
 
 }

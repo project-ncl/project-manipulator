@@ -15,19 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.projectmanipulator.core;
+package org.jboss.projectmanipulator.npm.da;
 
-/**
- * Represents a generic project.
- */
-public interface Project {
+import org.apache.commons.lang.StringUtils;
 
-    /**
-     * Updates the project file by manipulated contents.
-     *
-     * @throws ManipulationException
-     *             in case of an update failure
-     */
-    void update() throws ManipulationException;
+public class ErrorMessage {
 
+    public final String errorType;
+
+    public final String errorMessage;
+
+    public final String details;
+
+    public ErrorMessage() {
+        details = errorMessage = errorType = StringUtils.EMPTY;
+    }
+
+    @Override
+    public String toString() {
+        return errorType + " " + errorMessage + " " + details;
+    }
 }

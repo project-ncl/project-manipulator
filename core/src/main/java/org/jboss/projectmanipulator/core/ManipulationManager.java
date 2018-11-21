@@ -20,6 +20,7 @@ package org.jboss.projectmanipulator.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class ManipulationManager {
 
     private List<Manipulator> manipulators;
 
-    public void init(ManipulationSession session) {
+    public void init(ManipulationSession session) throws ManipulationException {
         this.manipulators = session.getActiveManipulators();
     }
 
@@ -52,12 +53,8 @@ public class ManipulationManager {
     }
 
     /**
-     * After projects are scanned for modifications, apply any modifications. This method performs the following:
-     * <ul>
-     * <li>read the raw models (uninherited, with only a bare minimum interpolation) from disk to escape any
-     * interpretation happening during project-building</li>
-     * <li>apply any manipulations</li>
-     * </ul>
+     * Applies any modifications on projects. It resolves the order of manipulators being performed by checking
+     * dependencies' status.
      *
      * @param projects
      *            the list of Projects to apply the changes to
@@ -67,12 +64,27 @@ public class ManipulationManager {
      */
     private Set<Project> applyManipulations(final List<Project> projects) throws ManipulationException {
         final Set<Project> changed = new HashSet<>();
-        for (final Manipulator manipulator : manipulators) {
-            final Set<Project> mChanged = manipulator.applyChanges(projects);
+        final Set<Manipulator> todo = new HashSet<>(manipulators);
+        int done;
+        do {
+            done = 0;
+            for (Manipulator manipulator : new ArrayList<>(todo)) {
+                if (dependenciesDone(manipulator, todo)) {
+                    final Set<Project> mChanged = manipulator.applyChanges(projects);
 
-            if (mChanged != null) {
-                changed.addAll(mChanged);
+                    if (mChanged != null) {
+                        changed.addAll(mChanged);
+                    }
+
+                    todo.remove(manipulator);
+                    done++;
+                }
             }
+        } while (!todo.isEmpty() && done > 0);
+
+        if (!todo.isEmpty()) {
+            throw new ManipulationException("A dependency cycle has been found, so manipulation cannot be finished. "
+                    + "Remaining manipulators are: %s", null, todo);
         }
 
         if (changed.isEmpty()) {
@@ -80,5 +92,23 @@ public class ManipulationManager {
         }
 
         return changed;
+    }
+
+    /**
+     * Checks if dependencies of the provided manipulator are done, so the manipulation can be performed.
+     *
+     * @param manipulator checked manipulator
+     * @param todo manipulators to be done
+     * @return true if none of the dependencies is in the todo set, otherwise false
+     */
+    private boolean dependenciesDone(Manipulator manipulator, Set<Manipulator> todo) {
+        for (Class<? extends Manipulator> dependencyClass : manipulator.getDependencies()) {
+            for (Manipulator todoMan : todo) {
+                if (dependencyClass.isAssignableFrom(todoMan.getClass())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

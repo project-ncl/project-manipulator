@@ -141,8 +141,14 @@ public class DAVersionsCollector implements Manipulator {
         int status;
         Map<NpmPackageRef, List<String>> result;
 
+        String url = restURL + (restURL.endsWith("/") ? "" : '/');
+        if (!url.endsWith("v-1/")) {
+            url += "v-1/";
+        }
+        url += "reports/lookup/npm";
+
         try {
-            r = Unirest.post(restURL + (restURL.endsWith("/") ? "" : '/') + "v-1/reports/lookup/npm")
+            r = Unirest.post(url)
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
                     .header("Log-Context", getHeaderContext())

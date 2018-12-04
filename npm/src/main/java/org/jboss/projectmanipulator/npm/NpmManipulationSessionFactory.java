@@ -20,10 +20,10 @@ package org.jboss.projectmanipulator.npm;
 import java.io.File;
 import java.util.Properties;
 
-public class ManipulationSessionNpmFactory {
+public class NpmManipulationSessionFactory {
 
-    public static ManipulationSessionNpm createSession(File target, Properties properties, Properties userProps) {
-        return new ManipulationSessionNpm(target, properties, userProps);
+    public static NpmManipulationSession createSession(File target, Properties properties, Properties userProps) {
+        return new NpmManipulationSession(target, properties, userProps);
     }
 
 }

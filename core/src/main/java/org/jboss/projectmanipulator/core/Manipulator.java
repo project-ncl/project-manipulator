@@ -17,6 +17,7 @@
  */
 package org.jboss.projectmanipulator.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -32,14 +33,15 @@ import java.util.Set;
 public interface Manipulator {
 
     /**
-     * Initialize any state for the manipulator.
+     * Initialize any state for the manipulator and checks if it can be ran with current setup.
      *
      * @param session
      *            the session to initialize with.
+     * @return true if the manipulator will be ran
      * @throws ManipulationException
      *             if an error occurs.
      */
-    void init(ManipulationSession session) throws ManipulationException;
+    boolean init(ManipulationSession session) throws ManipulationException;
 
     /**
      * Apply any changes to the project definitions related to the given list of {@link Project} instances.
@@ -53,10 +55,10 @@ public interface Manipulator {
     Set<Project> applyChanges(List<Project> projects) throws ManipulationException;
 
     /**
-     * Determines the order in which manipulators are run, with the lowest number running first. Uses a 100-point scale.
+     * Gets dependencies (preceding manipulations) that has to finish their job before this manipulation can be ran.
      *
-     * @return current index.
+     * @return collection of dependencies' classes
      */
-    int getExecutionIndex();
+    Collection<Class<? extends Manipulator>> getDependencies();
 
 }

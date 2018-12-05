@@ -133,11 +133,13 @@ public class DAVersionsCollector implements Manipulator {
         Unirest.setObjectMapper( objectMapper );
     }
 
+    @SuppressWarnings("unchecked")
     private Map<NpmPackageRef, List<String>> getAvailableVersions(ArrayList<NpmPackageRef> restParam) {
         ReportMapper mapper = new ReportMapper("DA", "redhat");
         init(mapper);
 
-        HttpResponse<Map<NpmPackageRef, List<String>>> r;
+        @SuppressWarnings("rawtypes")
+        HttpResponse<Map> r;
         int status;
         Map<NpmPackageRef, List<String>> result;
 

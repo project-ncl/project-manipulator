@@ -110,6 +110,9 @@ public class NpmManipulationSession implements ManipulationSession {
     }
 
     public Properties getProperties() {
+        if (properties == null) {
+            properties = new Properties();
+        }
         return properties;
     }
 
@@ -119,6 +122,9 @@ public class NpmManipulationSession implements ManipulationSession {
 
     @Override
     public Properties getUserProps() {
+        if (userProps == null) {
+            userProps = new Properties();
+        }
         return userProps;
     }
 

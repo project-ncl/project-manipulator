@@ -22,7 +22,20 @@ e.g.
 java -jar project-manipulator-cli.jar -f npm-project/package.json
 ```
 
+# System Properties
+
+You can specify system properties in the CLI by using `-D<prop>=<value>`
+
+| System Properties | Description |
+| --- | --- |
+| restURL | Dependency Analysis REST URL (e.g http://da.url.com/da/rest/v-1) |
+| versionIncrementalSuffix | The version suffix to append to version of current project |
+| versionIncrementalSuffixPadding | With autoincrement, it is possible to configure padding for the increment |
+| versionOverride | TBD |
+| versionSuffixOverride |  TBD |
+
 # Notes
 
 The project is partially based on
 [POM Manipulation Extension](https://github.com/release-engineering/pom-manipulation-ext)
+

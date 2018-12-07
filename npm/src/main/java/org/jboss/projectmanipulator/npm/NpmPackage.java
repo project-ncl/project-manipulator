@@ -49,6 +49,12 @@ public class NpmPackage implements Project {
     private ObjectMapper mapper;
 
 
+    /**
+     * Creates an NPM project by referencing project definition files.
+     *
+     * @param packageFile basic package file, cannot be null
+     * @param packageLockFile a package-lock file, may be null if it does not exist for the project
+     */
     public NpmPackage(File packageFile, File packageLockFile) {
         super();
         this.packageFile = packageFile;
@@ -89,7 +95,7 @@ public class NpmPackage implements Project {
      *             in case of an error when reading package file
      */
     public JsonNode getPackageLock() throws ManipulationException {
-        if (packageLockJson == null) {
+        if ((packageLockFile != null) && (packageLockJson == null)) {
             if (packageLockFile.exists()) {
                 String packageLockContents;
                 try {

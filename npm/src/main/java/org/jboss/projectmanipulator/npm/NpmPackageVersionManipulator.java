@@ -42,7 +42,7 @@ import static org.apache.commons.lang.math.NumberUtils.createInteger;
  * {@link Manipulator} implementation that can modify an NPM project's version with either static
  * or calculated, incremental version qualifier.
  */
-public class NpmPackageVersionManipulator implements Manipulator {
+public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
     /** The separator that's used between the original version and the generated or provided suffix. */
     public static final String SUFFIX_SEPARATOR = "-";
@@ -62,13 +62,13 @@ public class NpmPackageVersionManipulator implements Manipulator {
 
     private String versionOverride;
 
-    private ManipulationSession session;
+    private ManipulationSession<NpmResult> session;
 
-    private List<Class<? extends Manipulator>> dependencies;
+    private List<Class<? extends Manipulator<NpmResult>>> dependencies;
 
 
     @Override
-    public boolean init(ManipulationSession session) throws ManipulationException {
+    public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
         this.session = session;
 
         Properties userProps = session.getUserProps();
@@ -97,7 +97,7 @@ public class NpmPackageVersionManipulator implements Manipulator {
     }
 
     @Override
-    public Set<Project> applyChanges(List<Project> projects) throws ManipulationException {
+    public Set<Project> applyChanges(final List<Project> projects) throws ManipulationException {
         @SuppressWarnings("unchecked")
         Map<String, Set<String>> availableVersions = session.getState(DAVersionsCollector.AVAILABLE_VERSIONS, Map.class);
 
@@ -124,6 +124,7 @@ public class NpmPackageVersionManipulator implements Manipulator {
 
                 if (!origVersion.equals(newVersion)) {
                     npmPackage.setVersion(newVersion);
+                    session.getResult().setVersion(newVersion);
                     changed.add(npmPackage);
                 }
             } else {
@@ -155,10 +156,10 @@ public class NpmPackageVersionManipulator implements Manipulator {
     }
 
     @Override
-    public Collection<Class<? extends Manipulator>> getDependencies() {
+    public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
         if (dependencies == null) {
             dependencies = new ArrayList<>();
-            if (isEmpty(versionOverride) && !isEmpty(restUrl)) {
+            if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl)) {
                 dependencies.add(DAVersionsCollector.class);
             }
         }

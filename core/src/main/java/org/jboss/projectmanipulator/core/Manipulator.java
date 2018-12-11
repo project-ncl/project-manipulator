@@ -30,7 +30,7 @@ import java.util.Set;
  * Note that the order of the Manipulators is important. While later Manipulators such as the Remove* are not so
  * important in terms of order, the initial ones are.
  */
-public interface Manipulator {
+public interface Manipulator<R> {
 
     /**
      * Initialize any state for the manipulator and checks if it can be ran with current setup.
@@ -41,7 +41,7 @@ public interface Manipulator {
      * @throws ManipulationException
      *             if an error occurs.
      */
-    boolean init(ManipulationSession session) throws ManipulationException;
+    boolean init(ManipulationSession<R> session) throws ManipulationException;
 
     /**
      * Apply any changes to the project definitions related to the given list of {@link Project} instances.
@@ -59,6 +59,6 @@ public interface Manipulator {
      *
      * @return collection of dependencies' classes
      */
-    Collection<Class<? extends Manipulator>> getDependencies();
+    Collection<Class<? extends Manipulator<R>>> getDependencies();
 
 }

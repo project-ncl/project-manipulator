@@ -17,6 +17,10 @@
  */
 package org.jboss.projectmanipulator.npm;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import org.jboss.projectmanipulator.core.ManipulationException;
 import org.jboss.projectmanipulator.core.ManipulationSession;
 import org.jboss.projectmanipulator.core.Manipulator;
@@ -25,38 +29,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class NpmManipulationSession implements ManipulationSession {
+public class NpmManipulationSession implements ManipulationSession<NpmResult> {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Properties properties;
     private File pkg;
+    private File resultFIle;
     private Properties userProps;
-    private List<Manipulator> manipulators;
+    private List<Manipulator<NpmResult>> manipulators;
     private final Map<String, Object> states = new HashMap<>();
+    private NpmResult result = new NpmResult();
 
-    public NpmManipulationSession(File pkg, Properties properties, Properties userProps) {
+
+    public NpmManipulationSession(File pkg, File resultFile, Properties properties, Properties userProps) {
         this.pkg = pkg;
+        this.resultFIle = resultFile;
         this.properties = properties;
         this.userProps = userProps;
     }
 
     @Override
-    public List<Manipulator> getActiveManipulators() throws ManipulationException {
+    public List<Manipulator<NpmResult>> getActiveManipulators() throws ManipulationException {
         if (manipulators == null) {
             manipulators = new ArrayList<>();
 
-            Manipulator[] allManipulators = new Manipulator[] {
+            @SuppressWarnings("unchecked")
+            Manipulator<NpmResult>[] allManipulators = new Manipulator[] {
                     new NpmPackageVersionManipulator(),
                     new DAVersionsCollector()
             };
-            for (Manipulator manipulator : allManipulators) {
+            for (Manipulator<NpmResult> manipulator : allManipulators) {
                 if (manipulator.init(this)) {
                     manipulators.add(manipulator);
                 }
@@ -67,7 +77,7 @@ public class NpmManipulationSession implements ManipulationSession {
 
     @Override
     public List<Project> getProjects() {
-        List<Project> result = new ArrayList<>();
+        List<Project> projects = new ArrayList<>();
 
         File packageLock = null;
         File packageFile = null;
@@ -101,12 +111,21 @@ public class NpmManipulationSession implements ManipulationSession {
                 }
             }
 
-            result.add(new NpmPackage(packageFile, packageLock));
+            NpmPackage pack = new NpmPackage(packageFile, packageLock);
+            projects.add(pack);
+
+            try {
+                result.setName(pack.getName());
+                result.setVersion(pack.getVersion());
+            } catch (ManipulationException e) {
+                throw new IllegalArgumentException("The project data could not be read from the package file " + pkg
+                        + "\nError: " + e.getMessage(), e);
+            }
         } else {
             logger.error("Given package path %s does not exist.", pkg);
         }
 
-        return result;
+        return projects;
     }
 
     public Properties getProperties() {
@@ -137,6 +156,24 @@ public class NpmManipulationSession implements ManipulationSession {
     @SuppressWarnings("unchecked")
     public <T> T getState(String key, Class<T> cls) {
         return (T) states.get(key);
+    }
+
+    @Override
+    public NpmResult getResult() {
+        return result;
+    }
+
+    @Override
+    public void writeResult() {
+        if (resultFIle != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+            try {
+                writer.writeValue(resultFIle, result);
+            } catch (IOException ex) {
+                logger.error("Error when writing result file: " + ex.getMessage(), ex);;
+            }
+        }
     }
 
 }

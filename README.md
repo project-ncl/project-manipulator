@@ -10,13 +10,15 @@ Various manipulations can be performed on a project and their execution can be c
 usage: ...
  -t,--type                The project type. Can be only NPM for now and is not mandatory.
                           It is not case-sensitive.
- -d,--debug               Enable debug
- -D <arg>                 Java Properties
  -f,--file <arg>          Project definition file
+ -r,--result <arg>        Json file to be generated at the end of manipulation containing
+                          the results. Is not mandatory.
+ -D <arg>                 Java properties
  -h,--help                Print help
  -l,--log <arg>           Log file to output logging to
     --log-context <arg>   Add log-context ID
- -r,--trace               Enable trace
+ -d,--debug               Enable debug
+ -c,--trace               Enable trace
 ```
 e.g.
 ```

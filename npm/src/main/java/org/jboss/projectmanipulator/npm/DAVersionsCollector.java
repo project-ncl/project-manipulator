@@ -57,7 +57,7 @@ import static org.apache.http.HttpStatus.SC_OK;
  * prepopulate package versions into the the state under key BEST_MATCH_VERSIONS in case the restURL was provided and
  * versionOverride is empty.
  */
-public class DAVersionsCollector implements Manipulator {
+public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     public static final String AVAILABLE_VERSIONS = "availableVersions";
 
@@ -67,20 +67,23 @@ public class DAVersionsCollector implements Manipulator {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ManipulationSession session;
+    private ManipulationSession<NpmResult> session;
 
     private String restURL;
 
 
     @Override
-    public boolean init(final ManipulationSession session) throws ManipulationException {
+    public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
         this.session = session;
         Properties userProps = session.getUserProps();
         String versionOverride = userProps.getProperty("versionOverride");
         if (isEmpty(versionOverride)) {
-            restURL = userProps.getProperty("restURL");
-            if (!isEmpty(restURL)) {
-                return true;
+            String versionSuffixOverride = userProps.getProperty("versionSuffixOverride");
+            if (isEmpty(versionSuffixOverride)) {
+                restURL = userProps.getProperty("restURL");
+                if (!isEmpty(restURL)) {
+                    return true;
+                }
             }
         }
 
@@ -230,7 +233,7 @@ public class DAVersionsCollector implements Manipulator {
     }
 
     @Override
-    public Collection<Class<? extends Manipulator>> getDependencies() {
+    public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
         return Collections.emptyList();
     }
 

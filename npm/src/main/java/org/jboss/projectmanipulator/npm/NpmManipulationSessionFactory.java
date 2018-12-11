@@ -22,8 +22,9 @@ import java.util.Properties;
 
 public class NpmManipulationSessionFactory {
 
-    public static NpmManipulationSession createSession(File target, Properties properties, Properties userProps) {
-        return new NpmManipulationSession(target, properties, userProps);
+    public static NpmManipulationSession createSession(File projectFile, File resultFile, Properties properties,
+            Properties userProps) {
+        return new NpmManipulationSession(projectFile, resultFile, properties, userProps);
     }
 
 }

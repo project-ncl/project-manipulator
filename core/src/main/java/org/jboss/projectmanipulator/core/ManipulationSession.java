@@ -20,7 +20,7 @@ package org.jboss.projectmanipulator.core;
 import java.util.List;
 import java.util.Properties;
 
-public interface ManipulationSession {
+public interface ManipulationSession<R> {
 
     /**
      * Provides active manipulators for current session based on provided parameters.
@@ -28,7 +28,7 @@ public interface ManipulationSession {
      * @return ordered list of active manipulators
      * @throws ManipulationException in case of an error during initialization
      */
-    List<Manipulator> getActiveManipulators() throws ManipulationException;
+    List<Manipulator<R>> getActiveManipulators() throws ManipulationException;
 
     /**
      * Provides the list of project files that will be manipulated.
@@ -47,5 +47,12 @@ public interface ManipulationSession {
     void setState(String key, Object state);
 
     <T> T getState(String key, Class<T> cls);
+
+    R getResult();
+
+    /**
+     * Writes manipulation result into result file.
+     */
+    void writeResult();
 
 }

@@ -47,12 +47,11 @@ public class Cli {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @SuppressWarnings("rawtypes")
     private ManipulationSession session;
 
-    private ManipulationManager manipulationManager = new ManipulationManager();
-
-    /** Project file to operate against. */
-    private File target = new File(System.getProperty("user.dir"), "package.json");
+    @SuppressWarnings("rawtypes")
+    private ManipulationManager manipulationManager = new ManipulationManager<>();
 
     /** Properties a user may define on the command line. */
     private Properties userProps;
@@ -61,16 +60,20 @@ public class Cli {
         System.exit(new Cli().run(args));
     }
 
+    @SuppressWarnings("unchecked")
     public int run(String[] args) {
         Options options = new Options();
         options.addOption("h", false, "Print this help message.");
         options.addOption(Option.builder("t").longOpt("type").desc("The project type. Can be only NPM for now and is "
                 + "not mandatory. It is not case-sensitive.").build());
         options.addOption(Option.builder("d").longOpt("debug").desc("Enable debug").build());
-        options.addOption(Option.builder("r").longOpt("trace").desc("Enable trace").build());
+        options.addOption(Option.builder("c").longOpt("trace").desc("Enable trace").build());
         options.addOption(Option.builder("h").longOpt("help").desc("Print help").build());
         options.addOption(
                 Option.builder("f").longOpt("file").hasArgs().numberOfArgs(1).desc("Project definition file").build());
+        options.addOption(Option.builder("r").longOpt("result").hasArgs().numberOfArgs(1)
+                .desc("Json file to be generated at the end of manipulation containing the results. Is not mandatory.")
+                .build());
         options.addOption(Option.builder().longOpt("log-context").desc("Add log-context ID").numberOfArgs(1).build());
         options.addOption(
                 Option.builder("l").longOpt("log").desc("Log file to output logging to").numberOfArgs(1).build());
@@ -98,9 +101,19 @@ public class Cli {
         if (cmd.hasOption('D')) {
             userProps = cmd.getOptionProperties("D");
         }
+
+        File projectFile;
         if (cmd.hasOption('f')) {
-            target = new File(cmd.getOptionValue('f'));
+            projectFile = new File(cmd.getOptionValue('f'));
+        } else {
+            projectFile = new File(System.getProperty("user.dir"));
         }
+
+        File result = null;
+        if (cmd.hasOption('r')) {
+            result = new File(cmd.getOptionValue('r'));
+        }
+
         if (cmd.hasOption("log-context")) {
             String mdc = cmd.getOptionValue("log-context");
             if (isNotEmpty(mdc)) {
@@ -109,7 +122,7 @@ public class Cli {
             }
         }
 
-        createSession(target);
+        createSession(projectFile, result);
 
         final Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
@@ -139,12 +152,12 @@ public class Cli {
         if (cmd.hasOption('d')) {
             root.setLevel(Level.DEBUG);
         }
-        if (cmd.hasOption('r')) {
+        if (cmd.hasOption('c')) {
             root.setLevel(Level.TRACE);
         }
 
-        if (!target.exists()) {
-            logger.info("Project Manipulation failed. File {} cannot be found.", target);
+        if (!projectFile.exists()) {
+            logger.info("Project Manipulation failed. File {} cannot be found.", projectFile);
             return 10;
         }
 
@@ -162,7 +175,7 @@ public class Cli {
         return 0;
     }
 
-    private void createSession(File target) {
-        session = NpmManipulationSessionFactory.createSession(target, System.getProperties(), userProps);
+    private void createSession(File projectFile, File resultFile) {
+        session = NpmManipulationSessionFactory.createSession(projectFile, resultFile, System.getProperties(), userProps);
     }
 }

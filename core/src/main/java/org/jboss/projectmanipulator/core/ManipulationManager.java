@@ -25,28 +25,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ManipulationManager {
+public class ManipulationManager<R> {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private List<Manipulator> manipulators;
+    private List<Manipulator<R>> manipulators;
 
-    public void init(ManipulationSession session) throws ManipulationException {
+    public void init(ManipulationSession<R> session) throws ManipulationException {
         this.manipulators = session.getActiveManipulators();
     }
 
-    public void scanAndApply(final ManipulationSession session) throws ManipulationException {
+    public void scanAndApply(final ManipulationSession<R> session) throws ManipulationException {
         // get project files list
         List<Project> projects = session.getProjects();
+        R result = session.getResult();
 
         // apply manipulators on project files list and get changed ones back
-        Set<Project> changed = applyManipulations(projects);
+        Set<Project> changed = applyManipulations(projects, result);
 
         // process the changes
         processChanges(changed, session);
+        session.writeResult();
     }
 
-    private void processChanges(Set<Project> changed, ManipulationSession session) throws ManipulationException {
+    private void processChanges(Set<Project> changed, ManipulationSession<R> session) throws ManipulationException {
         for (Project project : changed) {
             project.update();
         }
@@ -58,17 +60,19 @@ public class ManipulationManager {
      *
      * @param projects
      *            the list of Projects to apply the changes to
+     * @param result
+     * 			  the result object to be used by manipulators to collect manipulation summary
      * @return a set of the changed projects, never {@code null}
      * @throws ManipulationException
      *             if an error occurs.
      */
-    private Set<Project> applyManipulations(final List<Project> projects) throws ManipulationException {
+    private Set<Project> applyManipulations(final List<Project> projects, final R result) throws ManipulationException {
         final Set<Project> changed = new HashSet<>();
-        final Set<Manipulator> todo = new HashSet<>(manipulators);
+        final Set<Manipulator<R>> todo = new HashSet<>(manipulators);
         int done;
         do {
             done = 0;
-            for (Manipulator manipulator : new ArrayList<>(todo)) {
+            for (Manipulator<R> manipulator : new ArrayList<>(todo)) {
                 if (dependenciesDone(manipulator, todo)) {
                     final Set<Project> mChanged = manipulator.applyChanges(projects);
 
@@ -101,9 +105,9 @@ public class ManipulationManager {
      * @param todo manipulators to be done
      * @return true if none of the dependencies is in the todo set, otherwise false
      */
-    private boolean dependenciesDone(Manipulator manipulator, Set<Manipulator> todo) {
-        for (Class<? extends Manipulator> dependencyClass : manipulator.getDependencies()) {
-            for (Manipulator todoMan : todo) {
+    private boolean dependenciesDone(Manipulator<R> manipulator, Set<Manipulator<R>> todo) {
+        for (Class<? extends Manipulator<R>> dependencyClass : manipulator.getDependencies()) {
+            for (Manipulator<R> todoMan : todo) {
                 if (dependencyClass.isAssignableFrom(todoMan.getClass())) {
                     return false;
                 }

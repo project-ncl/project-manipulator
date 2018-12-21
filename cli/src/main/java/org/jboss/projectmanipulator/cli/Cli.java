@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.jboss.projectmanipulator.cli;
+test
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;

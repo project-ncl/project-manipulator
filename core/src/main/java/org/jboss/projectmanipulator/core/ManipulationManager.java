@@ -53,6 +53,7 @@ public class ManipulationManager<R> {
 
         Set<Project> changed;
         if (manipulationDisabled) {
+            logger.info("All manipulation disabled by property {}.", MANIPULATION_DISABLE_PROPERTY);
             changed = Collections.emptySet();
         } else {
             // apply manipulators on project files list and get changed ones back

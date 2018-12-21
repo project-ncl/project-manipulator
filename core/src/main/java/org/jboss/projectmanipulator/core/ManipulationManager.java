@@ -53,13 +53,13 @@ public class ManipulationManager<R> {
 
         Set<Project> changed;
         if (manipulationDisabled) {
+            changed = Collections.emptySet();
+        } else {
             // apply manipulators on project files list and get changed ones back
             changed = applyManipulations(projects);
 
             // process the changes
             processChanges(changed, session);
-        } else {
-            changed = Collections.emptySet();
         }
 
         session.writeResult();

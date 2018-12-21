@@ -17,15 +17,20 @@
  */
 package org.jboss.projectmanipulator.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 public class ManipulationManager<R> {
+
+    public static final String MANIPULATION_DISABLE_PROPERTY = "manipulation.disable";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -38,13 +43,26 @@ public class ManipulationManager<R> {
     public void scanAndApply(final ManipulationSession<R> session) throws ManipulationException {
         // get project files list
         List<Project> projects = session.getProjects();
-        R result = session.getResult();
 
-        // apply manipulators on project files list and get changed ones back
-        Set<Project> changed = applyManipulations(projects, result);
+        Properties userProps = session.getUserProps();
+        boolean manipulationDisabled = false;
+        if (userProps.containsKey(MANIPULATION_DISABLE_PROPERTY)) {
+            String manipDisableValue = userProps.getProperty(MANIPULATION_DISABLE_PROPERTY);
+            manipulationDisabled = StringUtils.isEmpty(manipDisableValue) || "true".equalsIgnoreCase(manipDisableValue);
+        }
 
-        // process the changes
-        processChanges(changed, session);
+        Set<Project> changed;
+        if (manipulationDisabled) {
+            logger.info("All manipulation disabled by property {}.", MANIPULATION_DISABLE_PROPERTY);
+            changed = Collections.emptySet();
+        } else {
+            // apply manipulators on project files list and get changed ones back
+            changed = applyManipulations(projects);
+
+            // process the changes
+            processChanges(changed, session);
+        }
+
         session.writeResult();
     }
 
@@ -60,13 +78,11 @@ public class ManipulationManager<R> {
      *
      * @param projects
      *            the list of Projects to apply the changes to
-     * @param result
-     * 			  the result object to be used by manipulators to collect manipulation summary
      * @return a set of the changed projects, never {@code null}
      * @throws ManipulationException
      *             if an error occurs.
      */
-    private Set<Project> applyManipulations(final List<Project> projects, final R result) throws ManipulationException {
+    private Set<Project> applyManipulations(final List<Project> projects) throws ManipulationException {
         final Set<Project> changed = new HashSet<>();
         final Set<Manipulator<R>> todo = new HashSet<>(manipulators);
         int done;

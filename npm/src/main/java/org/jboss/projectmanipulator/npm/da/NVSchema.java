@@ -27,7 +27,6 @@ public class NVSchema {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String versionSuffix;
 
-    // Backwards compatibility for versions of DependencyAnalyser that don't have this field.
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String repositoryGroup;
 

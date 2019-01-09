@@ -71,6 +71,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String restURL;
 
+    private String repositoryGroup;
+
+    private String versionIncrementalSuffix;
+
 
     @Override
     public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
@@ -82,7 +86,13 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
             if (isEmpty(versionSuffixOverride)) {
                 restURL = userProps.getProperty("restURL");
                 if (!isEmpty(restURL)) {
-                    return true;
+                    repositoryGroup = userProps.getProperty("repositoryGroup");
+                    if (!isEmpty(repositoryGroup)) {
+                        versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
+                        if (!isEmpty(versionIncrementalSuffix)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -138,7 +148,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     @SuppressWarnings("unchecked")
     private Map<NpmPackageRef, List<String>> getAvailableVersions(ArrayList<NpmPackageRef> restParam) {
-        ReportMapper mapper = new ReportMapper("DA", "redhat");
+        ReportMapper mapper = new ReportMapper(repositoryGroup, versionIncrementalSuffix);
         init(mapper);
 
         @SuppressWarnings("rawtypes")

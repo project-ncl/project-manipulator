@@ -32,6 +32,7 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | Java Property | Description |
 | --- | --- |
 | restURL | Dependency Analysis REST URL (e.g http://da.url.com/da/rest/v-1). It is used and required when user wants to perform automatic version increment. |
+| repositoryGroup | A repository group used by Dependency Analysis to read existing versions with the same base version and suffix. It is used and required when user wants to perform automatic version increment. |
 | versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. |
 | versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. |
 | versionOverride | Desired version used as the output of version manipulation overriding all the logic. If set, the manipulation only updates project version to this and does not do anything else (no communication with Dependency Analysis, no suffix computation etc). |
@@ -41,5 +42,5 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 
 # Notes
 
-The project is partially based on
+The project is inspired by and partially based on
 [POM Manipulation Extension](https://github.com/release-engineering/pom-manipulation-ext)

@@ -78,7 +78,7 @@
     <version.commons-codec>1.6</version.commons-codec>
     <version.commons-lang>2.5</version.commons-lang>
     <version.commons-io>2.6</version.commons-io>
-    <version.jackson>2.9.7</version.jackson>
+    <version.jackson>2.9.9.1</version.jackson>
     <version.atlas>1.0.0</version.atlas>
   </properties>
 

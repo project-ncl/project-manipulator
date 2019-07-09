@@ -72,13 +72,14 @@
 
   <properties>
     <projectOwner>Red Hat, Inc.</projectOwner>
-    <projectEmail>pkocandr@redhat.com</projectEmail>
+    <projectEmail>ncl-dev@redhat.com</projectEmail>
 
     <version.commons-cli>1.4</version.commons-cli>
     <version.commons-codec>1.6</version.commons-codec>
     <version.commons-lang>2.5</version.commons-lang>
     <version.commons-io>2.6</version.commons-io>
-    <version.jackson>2.9.9.1</version.jackson>
+    <version.jackson>2.9.9</version.jackson>
+    <version.jackson-databind>2.9.9.1</version.jackson-databind>
     <version.atlas>1.0.0</version.atlas>
   </properties>
 
@@ -134,7 +135,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${version.jackson}</version>
+        <version>${version.jackson-databind}</version>
       </dependency>
 
       <dependency>

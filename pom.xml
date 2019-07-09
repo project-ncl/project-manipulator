@@ -72,7 +72,7 @@
 
   <properties>
     <projectOwner>Red Hat, Inc.</projectOwner>
-    <projectEmail>pkocandr@redhat.com</projectEmail>
+    <projectEmail>ncl-dev@redhat.com</projectEmail>
 
     <version.commons-cli>1.4</version.commons-cli>
     <version.commons-codec>1.6</version.commons-codec>

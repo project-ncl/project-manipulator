@@ -54,8 +54,8 @@ import static org.apache.http.HttpStatus.SC_OK;
 /**
  * This Manipulator collects data from an external service while doesn't do any manipulations to the project definitions.
  * It makes a REST call to loadRemoteOverrides the NVs to align the project version and dependencies to. It will
- * prepopulate package versions into the the state under key BEST_MATCH_VERSIONS in case the restURL was provided and
- * versionOverride is empty.
+ * prepopulate package versions into the state under key {@link #AVAILABLE_VERSIONS} in case the restURL was provided
+ * and versionOverride and versionSuffixOverride values is empty.
  */
 public class DAVersionsCollector implements Manipulator<NpmResult> {
 

@@ -69,8 +69,31 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     private List<Class<? extends Manipulator<NpmResult>>> dependencies;
 
 
+    /**
+     * The default public constructor.
+     */
+    public NpmPackageVersionManipulator() {
+    }
+
+    /**
+     * Constructor used in tests.
+     *
+     * @param versionIncrementalSuffix initial value
+     * @param versionIncrementalSuffixPadding initial value
+     * @param versionSuffixOverride initial value
+     * @param versionOverride initial value
+     */
+    NpmPackageVersionManipulator(String versionIncrementalSuffix, Integer versionIncrementalSuffixPadding,
+            String versionSuffixOverride, String versionOverride) {
+        this.versionIncrementalSuffix = versionIncrementalSuffix;
+        this.versionIncrementalSuffixPadding = versionIncrementalSuffixPadding;
+        this.versionSuffixOverride = versionSuffixOverride;
+        this.versionOverride = versionOverride;
+    }
+
+
     @Override
-    public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
+    public boolean init(final ManipulationSession<NpmResult> session) {
         this.session = session;
 
         Properties userProps = session.getUserProps();
@@ -110,20 +133,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 NpmPackage npmPackage = (NpmPackage) project;
 
                 String origVersion = npmPackage.getVersion();
-                String newVersion = null;
-                if (isEmpty(versionOverride)) {
-                    if (isEmpty(versionSuffixOverride)) {
-                        int suffixNum = findHighestIncrementalNum(origVersion,
-                                availableVersions.get(npmPackage.getName())) + 1;
-                        String versionSuffix = versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR
-                                + leftPad(String.valueOf(suffixNum), versionIncrementalSuffixPadding, '0');
-                        newVersion = origVersion + SUFFIX_SEPARATOR + versionSuffix;
-                    } else {
-                        newVersion = origVersion + SUFFIX_SEPARATOR + versionSuffixOverride;
-                    }
-                } else {
-                    newVersion = versionOverride;
-                }
+                Set<String> availablePkgVersions = availableVersions.get(npmPackage.getName());
+                String newVersion = getNewVersion(origVersion, availablePkgVersions);
 
                 if (!origVersion.equals(newVersion)) {
                     npmPackage.setVersion(newVersion);
@@ -139,10 +150,44 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         return changed;
     }
 
-    private int findHighestIncrementalNum(String origVersion, Set<String> availableVersions) {
+    String getNewVersion(String origVersion, Set<String> availablePkgVersions) {
+        String newVersion = null;
+        if (isEmpty(versionOverride)) {
+            if (isEmpty(versionSuffixOverride)) {
+                newVersion = generateNewVersion(origVersion, availablePkgVersions);
+            } else {
+                newVersion = origVersion + SUFFIX_SEPARATOR + versionSuffixOverride;
+            }
+        } else {
+            newVersion = versionOverride;
+        }
+        return newVersion;
+    }
+
+    /**
+     * Generates a new suffixed version based on original version, available version for the given package, suffix
+     * string and suffix padding settings.
+     *
+     * @param origVersion
+     * @param availablePkgVersions
+     * @return
+     */
+    String generateNewVersion(String origVersion, Set<String> availablePkgVersions) {
+        String bareVersion = origVersion;
+        if (origVersion.matches(".+" + SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+")) {
+            bareVersion = origVersion.replaceFirst(SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+", "");
+        }
+        int suffixNum = findHighestIncrementalNum(bareVersion, availablePkgVersions) + 1;
+        String versionSuffix = versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR
+                + leftPad(String.valueOf(suffixNum), versionIncrementalSuffixPadding, '0');
+        String newVersion = bareVersion + SUFFIX_SEPARATOR + versionSuffix;
+        return newVersion;
+    }
+
+    int findHighestIncrementalNum(String origVersion, Set<String> availableVersions) {
         String lookupPrefix = origVersion + SUFFIX_SEPARATOR + versionIncrementalSuffix;
         int highestFoundNum = 0;
-//        if (existingVersions != null) {
+//        if (availableVersions != null) {
             for (String version : availableVersions) {
                 if (version.startsWith(lookupPrefix)) {
                     String incrementalPart = substring(version, lookupPrefix.length() + 1);

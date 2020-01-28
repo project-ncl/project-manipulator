@@ -25,8 +25,7 @@ public interface Project {
     /**
      * Updates the project file by manipulated contents.
      *
-     * @throws ManipulationException
-     *             in case of an update failure
+     * @throws ManipulationException in case of an update failure
      */
     void update() throws ManipulationException;
 

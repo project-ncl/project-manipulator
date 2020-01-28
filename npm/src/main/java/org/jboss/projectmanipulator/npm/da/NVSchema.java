@@ -32,7 +32,6 @@ public class NVSchema {
 
     public List<Map<String, Object>> packages;
 
-
     public NVSchema() {
     }
 
@@ -42,10 +41,8 @@ public class NVSchema {
         this.packages = packages;
     }
 
-
     @Override
     public String toString() {
-        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: packages "
-                + packages;
+        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: packages " + packages;
     }
 }

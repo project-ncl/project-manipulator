@@ -23,34 +23,29 @@ import java.util.Set;
 
 /**
  * Represents one way that a project may be manipulated/modified during pre-processing.State is stored in the
- * {@link ManipulationSession} instance. State consists of both configuration (normally detected from the user
- * properties, or -D options on the command line), and also changes detected in the scan() method invocation that will
- * be applied later.
+ * {@link ManipulationSession} instance. State consists of both configuration (normally detected from the user properties, or -D
+ * options on the command line), and also changes detected in the scan() method invocation that will be applied later.
  *
- * Note that the order of the Manipulators is important. While later Manipulators such as the Remove* are not so
- * important in terms of order, the initial ones are.
+ * Note that the order of the Manipulators is important. While later Manipulators such as the Remove* are not so important in
+ * terms of order, the initial ones are.
  */
 public interface Manipulator<R> {
 
     /**
      * Initialize any state for the manipulator and checks if it can be ran with current setup.
      *
-     * @param session
-     *            the session to initialize with.
+     * @param session the session to initialize with.
      * @return true if the manipulator will be ran
-     * @throws ManipulationException
-     *             if an error occurs.
+     * @throws ManipulationException if an error occurs.
      */
     boolean init(ManipulationSession<R> session) throws ManipulationException;
 
     /**
      * Apply any changes to the project definitions related to the given list of {@link Project} instances.
      *
-     * @param projects
-     *            the Projects to apply the changes to.
+     * @param projects the Projects to apply the changes to.
      * @return the set of changed projects.
-     * @throws ManipulationException
-     *             if an error occurs.
+     * @throws ManipulationException if an error occurs.
      */
     Set<Project> applyChanges(List<Project> projects) throws ManipulationException;
 

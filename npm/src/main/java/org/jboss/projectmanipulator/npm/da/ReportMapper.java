@@ -43,12 +43,10 @@ public class ReportMapper implements ObjectMapper {
 
     private String errorString;
 
-
     public ReportMapper(String repositoryGroup, String incrementalSerialSuffix) {
         this.repositoryGroup = repositoryGroup;
         this.versionSuffix = incrementalSerialSuffix;
     }
-
 
     @Override
     public Map<NpmPackageRef, List<String>> readValue(String s) {
@@ -85,7 +83,7 @@ public class ReportMapper implements ObjectMapper {
                 String name = (String) npmPackage.get("name");
                 String version = (String) npmPackage.get("version");
                 Version semverVersion = Version.valueOf(version);
-                //String bestMatchVersion = (String) npmPackage.get("bestMatchVersion");
+                // String bestMatchVersion = (String) npmPackage.get("bestMatchVersion");
                 @SuppressWarnings("unchecked")
                 List<String> availableVersions = (List<String>) npmPackage.get("availableVersions");
 
@@ -96,7 +94,9 @@ public class ReportMapper implements ObjectMapper {
             }
         } catch (IOException e) {
             logger.error("Failed to decode map when reading string {}", s);
-            throw new RuntimeException("Failed to read list-of-maps response from version server: " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Failed to read list-of-maps response from version server: " + e.getMessage(),
+                    e);
         }
 
         return result;

@@ -52,10 +52,10 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_OK;
 
 /**
- * This Manipulator collects data from an external service while doesn't do any manipulations to the project definitions.
- * It makes a REST call to loadRemoteOverrides the NVs to align the project version and dependencies to. It will
- * prepopulate package versions into the state under key {@link #AVAILABLE_VERSIONS} in case the restURL was provided
- * and versionOverride and versionSuffixOverride values is empty.
+ * This Manipulator collects data from an external service while doesn't do any manipulations to the project definitions. It
+ * makes a REST call to loadRemoteOverrides the NVs to align the project version and dependencies to. It will prepopulate
+ * package versions into the state under key {@link #AVAILABLE_VERSIONS} in case the restURL was provided and versionOverride
+ * and versionSuffixOverride values is empty.
  */
 public class DAVersionsCollector implements Manipulator<NpmResult> {
 
@@ -74,7 +74,6 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     private String repositoryGroup;
 
     private String versionIncrementalSuffix;
-
 
     @Override
     public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
@@ -137,13 +136,12 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         parseVersions(availableVersions, npmPackageRefs, restResult);
     }
 
-    private void init (ObjectMapper objectMapper)
-    {
+    private void init(ObjectMapper objectMapper) {
         // According to https://github.com/Mashape/unirest-java the default connection timeout is 10000
         // and the default socketTimeout is 60000.
         // We have increased the first to 30 seconds and the second to 10 minutes.
-        Unirest.setTimeouts( 30000, 600000 );
-        Unirest.setObjectMapper( objectMapper );
+        Unirest.setTimeouts(30000, 600000);
+        Unirest.setObjectMapper(objectMapper);
     }
 
     @SuppressWarnings("unchecked")
@@ -178,8 +176,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                         "Received response status " + status + " with message: " + mapper.getErrorString());
             }
         } catch (UnirestException ex) {
-            throw new DAException("An exception was thrown when requesting the NPM versions for " + restParam
-                    + " with message " + ex.getMessage(), ex);
+            throw new DAException(
+                    "An exception was thrown when requesting the NPM versions for " + restParam + " with message "
+                            + ex.getMessage(),
+                    ex);
         }
 
         return result;
@@ -201,10 +201,12 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     /**
-     * Parse the rest result for the project names and store them in versioning state for use there by incremental
-     * suffix calculation.
+     * Parse the rest result for the project names and store them in versioning state for use there by incremental suffix
+     * calculation.
      */
-    private void parseVersions(Map<String, Set<String>> state, ArrayList<NpmPackageRef> npmPackageRefs,
+    private void parseVersions(
+            Map<String, Set<String>> state,
+            ArrayList<NpmPackageRef> npmPackageRefs,
             Map<NpmPackageRef, List<String>> restResult) throws ManipulationException {
         for (final NpmPackageRef p : npmPackageRefs) {
             if (restResult.containsKey(p)) {
@@ -237,8 +239,11 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         long finish = System.nanoTime();
         long minutes = TimeUnit.NANOSECONDS.toMinutes(finish - start);
         long seconds = TimeUnit.NANOSECONDS.toSeconds(finish - start) - (minutes * 60);
-        logger.info("REST client finished {}... (took {} min, {} sec, {} millisec)",
-                (finished ? "successfully" : "with failures"), minutes, seconds,
+        logger.info(
+                "REST client finished {}... (took {} min, {} sec, {} millisec)",
+                (finished ? "successfully" : "with failures"),
+                minutes,
+                seconds,
                 (TimeUnit.NANOSECONDS.toMillis(finish - start) - (minutes * 60 * 1000) - (seconds * 1000)));
     }
 

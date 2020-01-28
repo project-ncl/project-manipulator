@@ -64,8 +64,8 @@ public class Cli {
     public int run(String[] args) {
         Options options = new Options();
         options.addOption("h", false, "Print this help message.");
-        options.addOption(Option.builder("t").longOpt("type").desc("The project type. Can be only NPM for now and is "
-                + "not mandatory. It is not case-sensitive.").build());
+        options.addOption(Option.builder("t").longOpt("type")
+                .desc("The project type. Can be only NPM for now and is not mandatory. It is not case-sensitive.").build());
         options.addOption(Option.builder("d").longOpt("debug").desc("Enable debug").build());
         options.addOption(Option.builder("c").longOpt("trace").desc("Enable trace").build());
         options.addOption(Option.builder("h").longOpt("help").desc("Print help").build());
@@ -75,10 +75,8 @@ public class Cli {
                 .desc("Json file to be generated at the end of manipulation containing the results. Is not mandatory.")
                 .build());
         options.addOption(Option.builder().longOpt("log-context").desc("Add log-context ID").numberOfArgs(1).build());
-        options.addOption(
-                Option.builder("l").longOpt("log").desc("Log file to output logging to").numberOfArgs(1).build());
-        options.addOption(
-                Option.builder("D").hasArgs().numberOfArgs(2).valueSeparator('=').desc("Java Properties").build());
+        options.addOption(Option.builder("l").longOpt("log").desc("Log file to output logging to").numberOfArgs(1).build());
+        options.addOption(Option.builder("D").hasArgs().numberOfArgs(2).valueSeparator('=').desc("Java Properties").build());
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd;

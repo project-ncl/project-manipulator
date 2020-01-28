@@ -48,7 +48,6 @@ public class NpmPackage implements Project {
 
     private ObjectMapper mapper;
 
-
     /**
      * Creates an NPM project by referencing project definition files.
      *
@@ -62,13 +61,11 @@ public class NpmPackage implements Project {
         mapper = new ObjectMapper();
     }
 
-
     /**
      * Provides the JsonNode tree parsed from package.json referenced by packageFile.
      *
      * @return read JsonNode, never {@code null}
-     * @throws ManipulationException
-     *             in case of an error when reading package file or the package file does not exist
+     * @throws ManipulationException in case of an error when reading package file or the package file does not exist
      */
     public JsonNode getPackage() throws ManipulationException {
         if (packageJson == null) {
@@ -91,8 +88,7 @@ public class NpmPackage implements Project {
      * Provides the JsonNode tree parsed from package-lock.json referenced by packageFile.
      *
      * @return read JsonNode or null in case of file does not exist
-     * @throws ManipulationException
-     *             in case of an error when reading package file
+     * @throws ManipulationException in case of an error when reading package file
      */
     public JsonNode getPackageLock() throws ManipulationException {
         if ((packageLockFile != null) && (packageLockJson == null)) {
@@ -156,8 +152,7 @@ public class NpmPackage implements Project {
      * Retrieves package name from loaded package file.
      *
      * @return retrieved name
-     * @throws ManipulationException
-     *             in case the project cannot be loaded or does not have correct structure
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
      */
     public String getName() throws ManipulationException {
         getPackage();
@@ -172,8 +167,7 @@ public class NpmPackage implements Project {
      * Retrieves package version from loaded package file.
      *
      * @return retrieved version
-     * @throws ManipulationException
-     *             in case the project cannot be loaded or does not have correct structure
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
      */
     public String getVersion() throws ManipulationException {
         getPackage();
@@ -188,8 +182,7 @@ public class NpmPackage implements Project {
      * Updates package version in the loaded package file and package-lock file.
      *
      * @param version the version to be set
-     * @throws ManipulationException
-     *             in case the project cannot be loaded or does not have correct structure
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
      */
     public void setVersion(String version) throws ManipulationException {
         getPackage();
@@ -197,13 +190,15 @@ public class NpmPackage implements Project {
         if (packageJson instanceof ObjectNode) {
             ((ObjectNode) packageJson).replace("version", new TextNode(version));
         } else {
-            throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null, packageFile);
+            throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null,
+                    packageFile);
         }
         if (packageLockJson != null) {
             if (packageLockJson instanceof ObjectNode) {
                 ((ObjectNode) packageLockJson).replace("version", new TextNode(version));
             } else {
-                throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null, packageLockFile);
+                throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null,
+                        packageLockFile);
             }
         }
     }

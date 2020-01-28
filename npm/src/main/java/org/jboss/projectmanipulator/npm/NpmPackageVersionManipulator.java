@@ -39,8 +39,8 @@ import static org.apache.commons.lang.StringUtils.substring;
 import static org.apache.commons.lang.math.NumberUtils.createInteger;
 
 /**
- * {@link Manipulator} implementation that can modify an NPM project's version with either static
- * or calculated, incremental version qualifier.
+ * {@link Manipulator} implementation that can modify an NPM project's version with either static or calculated, incremental
+ * version qualifier.
  */
 public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
@@ -68,7 +68,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
     private List<Class<? extends Manipulator<NpmResult>>> dependencies;
 
-
     /**
      * The default public constructor.
      */
@@ -90,7 +89,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         this.versionSuffixOverride = versionSuffixOverride;
         this.versionOverride = versionOverride;
     }
-
 
     @Override
     public boolean init(final ManipulationSession<NpmResult> session) {
@@ -114,8 +112,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 versionIncrementalSuffixPadding = 1;
             }
 
-            return !isEmpty(versionOverride)
-                    || !isEmpty(versionSuffixOverride)
+            return !isEmpty(versionOverride) || !isEmpty(versionSuffixOverride)
                     || !isEmpty(restUrl) && !isEmpty(repositoryGroup) && !isEmpty(versionIncrementalSuffix);
         }
 
@@ -165,8 +162,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     }
 
     /**
-     * Generates a new suffixed version based on original version, available version for the given package, suffix
-     * string and suffix padding settings.
+     * Generates a new suffixed version based on original version, available version for the given package, suffix string and
+     * suffix padding settings.
      *
      * @param origVersion
      * @param availablePkgVersions
@@ -175,7 +172,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     String generateNewVersion(String origVersion, Set<String> availablePkgVersions) {
         String bareVersion = origVersion;
         if (origVersion.matches(".+" + SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+")) {
-            bareVersion = origVersion.replaceFirst(SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+", "");
+            bareVersion = origVersion
+                    .replaceFirst(SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+", "");
         }
         int suffixNum = findHighestIncrementalNum(bareVersion, availablePkgVersions) + 1;
         String versionSuffix = versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR
@@ -187,19 +185,19 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     int findHighestIncrementalNum(String origVersion, Set<String> availableVersions) {
         String lookupPrefix = origVersion + SUFFIX_SEPARATOR + versionIncrementalSuffix;
         int highestFoundNum = 0;
-//        if (availableVersions != null) {
-            for (String version : availableVersions) {
-                if (version.startsWith(lookupPrefix)) {
-                    String incrementalPart = substring(version, lookupPrefix.length() + 1);
-                    if (isNumeric(incrementalPart)) {
-                        int foundNum = Integer.valueOf(incrementalPart);
-                        if (foundNum > highestFoundNum) {
-                            highestFoundNum = foundNum;
-                        }
+        // if (availableVersions != null) {
+        for (String version : availableVersions) {
+            if (version.startsWith(lookupPrefix)) {
+                String incrementalPart = substring(version, lookupPrefix.length() + 1);
+                if (isNumeric(incrementalPart)) {
+                    int foundNum = Integer.valueOf(incrementalPart);
+                    if (foundNum > highestFoundNum) {
+                        highestFoundNum = foundNum;
                     }
                 }
             }
-//		}
+        }
+        // }
         return highestFoundNum;
     }
 
@@ -207,8 +205,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
         if (dependencies == null) {
             dependencies = new ArrayList<>();
-            if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl)
-                    && !isEmpty(repositoryGroup)) {
+            if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl) && !isEmpty(repositoryGroup)) {
                 dependencies.add(DAVersionsCollector.class);
             }
         }

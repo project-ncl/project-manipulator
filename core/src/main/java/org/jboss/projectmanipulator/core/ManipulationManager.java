@@ -73,8 +73,8 @@ public class ManipulationManager<R> {
     }
 
     /**
-     * Applies any modifications on projects. It resolves the order of manipulators being performed by checking dependencies'
-     * status.
+     * Applies any modifications on projects. It resolves the order of manipulators being performed by checking
+     * dependencies' status.
      *
      * @param projects the list of Projects to apply the changes to
      * @return a set of the changed projects, never {@code null}

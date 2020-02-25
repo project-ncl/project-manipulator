@@ -73,14 +73,12 @@ public class ManipulationManager<R> {
     }
 
     /**
-     * Applies any modifications on projects. It resolves the order of manipulators being performed by checking
-     * dependencies' status.
+     * Applies any modifications on projects. It resolves the order of manipulators being performed by checking dependencies'
+     * status.
      *
-     * @param projects
-     *            the list of Projects to apply the changes to
+     * @param projects the list of Projects to apply the changes to
      * @return a set of the changed projects, never {@code null}
-     * @throws ManipulationException
-     *             if an error occurs.
+     * @throws ManipulationException if an error occurs.
      */
     private Set<Project> applyManipulations(final List<Project> projects) throws ManipulationException {
         final Set<Project> changed = new HashSet<>();
@@ -103,8 +101,11 @@ public class ManipulationManager<R> {
         } while (!todo.isEmpty() && done > 0);
 
         if (!todo.isEmpty()) {
-            throw new ManipulationException("A dependency cycle has been found, so manipulation cannot be finished. "
-                    + "Remaining manipulators are: %s", null, todo);
+            throw new ManipulationException(
+                    "A dependency cycle has been found, so manipulation cannot be finished. "
+                            + "Remaining manipulators are: %s",
+                    null,
+                    todo);
         }
 
         if (changed.isEmpty()) {

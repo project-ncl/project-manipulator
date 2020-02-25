@@ -32,7 +32,6 @@ public class NVSchema {
 
     public List<Map<String, Object>> packages;
 
-
     public NVSchema() {
     }
 
@@ -41,7 +40,6 @@ public class NVSchema {
         this.versionSuffix = versionSuffix;
         this.packages = packages;
     }
-
 
     @Override
     public String toString() {

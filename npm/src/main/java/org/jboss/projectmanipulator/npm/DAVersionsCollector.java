@@ -52,10 +52,10 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_OK;
 
 /**
- * This Manipulator collects data from an external service while doesn't do any manipulations to the project definitions. It
- * makes a REST call to loadRemoteOverrides the NVs to align the project version and dependencies to. It will prepopulate
- * package versions into the state under key {@link #AVAILABLE_VERSIONS} in case the restURL was provided and versionOverride
- * and versionSuffixOverride values is empty.
+ * This Manipulator collects data from an external service while doesn't do any manipulations to the project
+ * definitions. It makes a REST call to loadRemoteOverrides the NVs to align the project version and dependencies to. It
+ * will prepopulate package versions into the state under key {@link #AVAILABLE_VERSIONS} in case the restURL was
+ * provided and versionOverride and versionSuffixOverride values is empty.
  */
 public class DAVersionsCollector implements Manipulator<NpmResult> {
 
@@ -201,8 +201,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     /**
-     * Parse the rest result for the project names and store them in versioning state for use there by incremental suffix
-     * calculation.
+     * Parse the rest result for the project names and store them in versioning state for use there by incremental
+     * suffix calculation.
      */
     private void parseVersions(
             Map<String, Set<String>> state,

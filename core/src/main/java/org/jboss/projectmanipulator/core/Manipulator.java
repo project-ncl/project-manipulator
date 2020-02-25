@@ -23,11 +23,12 @@ import java.util.Set;
 
 /**
  * Represents one way that a project may be manipulated/modified during pre-processing.State is stored in the
- * {@link ManipulationSession} instance. State consists of both configuration (normally detected from the user properties, or -D
- * options on the command line), and also changes detected in the scan() method invocation that will be applied later.
+ * {@link ManipulationSession} instance. State consists of both configuration (normally detected from the user
+ * properties, or -D options on the command line), and also changes detected in the scan() method invocation that will
+ * be applied later.
  *
- * Note that the order of the Manipulators is important. While later Manipulators such as the Remove* are not so important in
- * terms of order, the initial ones are.
+ * Note that the order of the Manipulators is important. While later Manipulators such as the Remove* are not so
+ * important in terms of order, the initial ones are.
  */
 public interface Manipulator<R> {
 

@@ -20,8 +20,8 @@ import static org.junit.Assert.assertThat;
 public class NpmPackageVersionManipulatorTest {
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the available
-     * version set is empty.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is empty.
      */
     @Test
     public void findHighestIncrementalNumWithNoAvailableVersions() {
@@ -34,9 +34,9 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the available
-     * version set is not empty, but contains only versions with non-matching major-minor-patch combination or with matching one,
-     * but non-matching suffix.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is not empty, but contains only versions with non-matching major-minor-patch combination or
+     * with matching one, but non-matching suffix.
      */
     @Test
     public void findHighestIncrementalNumWithNoMatchingAvailableVersions() {
@@ -51,8 +51,9 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 2 when the available
-     * version set is not empty and contains a version with non-matching suffix and 2 matching ones with 00001 and 00002 after it.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 2 when the
+     * available version set is not empty and contains a version with non-matching suffix and 2 matching ones with 00001
+     * and 00002 after it.
      */
     @Test
     public void findHighestIncrementalNumWithMatchingAvailableVersion() {
@@ -68,8 +69,8 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to get
-     * 1.0.0-jboss-00001.
+     * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to
+     * get 1.0.0-jboss-00001.
      */
     @Test
     public void generateNewVersionWhenNoSuffixedExists() {
@@ -81,8 +82,8 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests generation of new version when there are pre-existing suffixed versions - jboss-1 and jboss-00002. For version 1.0.0 it
-     * expects to get 1.0.0-jboss-00003.
+     * Tests generation of new version when there are pre-existing suffixed versions - jboss-1 and jboss-00002. For
+     * version 1.0.0 it expects to get 1.0.0-jboss-00003.
      */
     @Test
     public void generateNewVersionWithAvailableSuffixedVersions() {
@@ -97,9 +98,10 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests generation of new version for version that already contains the suffix when there are pre-existing suffixed versions -
-     * jboss-1 and jboss-00002. It expects that the original suffix will be removed and replaced by the generated one based on the
-     * highest available version, so for version 1.0.0-jboss-00004 it expects to get 1.0.0-jboss-00003.
+     * Tests generation of new version for version that already contains the suffix when there are pre-existing suffixed
+     * versions - jboss-1 and jboss-00002. It expects that the original suffix will be removed and replaced by the
+     * generated one based on the highest available version, so for version 1.0.0-jboss-00004 it expects to get
+     * 1.0.0-jboss-00003.
      */
     @Test
     public void generateNewVersionForSuffixedVersionWithPreexistingSuffixedVersions() {

@@ -39,8 +39,8 @@ import static org.apache.commons.lang.StringUtils.substring;
 import static org.apache.commons.lang.math.NumberUtils.createInteger;
 
 /**
- * {@link Manipulator} implementation that can modify an NPM project's version with either static or calculated, incremental
- * version qualifier.
+ * {@link Manipulator} implementation that can modify an NPM project's version with either static or calculated,
+ * incremental version qualifier.
  */
 public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
@@ -169,8 +169,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     }
 
     /**
-     * Generates a new suffixed version based on original version, available version for the given package, suffix string and suffix
-     * padding settings.
+     * Generates a new suffixed version based on original version, available version for the given package, suffix
+     * string and suffix padding settings.
      *
      * @param origVersion
      * @param availablePkgVersions

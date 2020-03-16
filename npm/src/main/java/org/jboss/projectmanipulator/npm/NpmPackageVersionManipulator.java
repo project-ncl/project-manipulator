@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         this.versionIncrementalSuffixPadding = versionIncrementalSuffixPadding;
         this.versionSuffixOverride = versionSuffixOverride;
         this.versionOverride = versionOverride;
+        this.session = new NpmManipulationSession();
     }
 
     @Override
@@ -136,7 +138,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 NpmPackage npmPackage = (NpmPackage) project;
 
                 String origVersion = npmPackage.getVersion();
-                Set<String> availablePkgVersions = availableVersions.get(npmPackage.getName());
+                Set<String> availablePkgVersions = availableVersions == null ? Collections.emptySet()
+                        : availableVersions.get(npmPackage.getName());
                 String newVersion = getNewVersion(origVersion, availablePkgVersions);
 
                 if (!origVersion.equals(newVersion)) {

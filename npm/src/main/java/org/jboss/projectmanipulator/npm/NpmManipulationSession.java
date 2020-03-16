@@ -48,6 +48,10 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
     private final Map<String, Object> states = new HashMap<>();
     private NpmResult result = new NpmResult();
 
+    /** Default constructor with limited visibility for tests. */
+    NpmManipulationSession() {
+    }
+
     public NpmManipulationSession(File pkg, File resultFile, Properties properties, Properties userProps) {
         this.pkg = pkg;
         this.resultFIle = resultFile;
@@ -108,7 +112,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
                 }
             }
 
-            NpmPackage pack = new NpmPackage(packageFile, packageLock);
+            NpmPackageImpl pack = new NpmPackageImpl(packageFile, packageLock);
             projects.add(pack);
 
             try {

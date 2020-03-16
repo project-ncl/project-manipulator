@@ -3,10 +3,14 @@
  */
 package org.jboss.projectmanipulator.npm;
 
+import org.jboss.projectmanipulator.core.ManipulationException;
+import org.jboss.projectmanipulator.core.Project;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -133,5 +137,46 @@ public class NpmPackageVersionManipulatorTest {
         String newVersion = manipulator.getNewVersion("1.0.0", availableSet);
 
         assertThat(versionOverride, is(newVersion));
+    }
+
+    /**
+     * Tests applying the version update with an override. It sets also versionSuffix and versionSuffixOverride, which
+     * should be both ignored and the result should be only the overriden version.
+     *
+     * @throws ManipulationException in case of an error
+     */
+    @Test
+    public void applyChangesWithVersionOverride() throws ManipulationException {
+        String versionOverride = "2.0.0-foo-001";
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(null, null, null, versionOverride);
+
+        List<Project> projects = new ArrayList<>();
+        projects.add(new NpmPackage() {
+            private String version = "1.0.0";
+
+            @Override
+            public void update() throws ManipulationException {
+                // do nothing
+            }
+
+            @Override
+            public String getName() throws ManipulationException {
+                return "test";
+            }
+
+            @Override
+            public String getVersion() throws ManipulationException {
+                return version;
+            }
+
+            @Override
+            public void setVersion(String version) throws ManipulationException {
+                this.version = version;
+            }
+        });
+        Set<Project> changed = manipulator.applyChanges(projects);
+
+        assertThat(1, is(changed.size()));
+        assertThat(versionOverride, is(((NpmPackage) changed.iterator().next()).getVersion()));
     }
 }

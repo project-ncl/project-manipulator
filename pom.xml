@@ -2,7 +2,7 @@
 <!--
 
     JBoss, Home of Professional Open Source.
-    Copyright 2018 Red Hat, Inc., and individual contributors
+    Copyright 2018-2020 Red Hat, Inc., and individual contributors
     as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -219,9 +219,20 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
-            <mavenExecutorId>forked-path</mavenExecutorId>
-            <useReleaseProfile>false</useReleaseProfile>
-            <arguments>-Prelease,run-its</arguments>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <releaseProfiles>release,run-its</releaseProfiles>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+          <extensions>true</extensions>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>false</autoReleaseAfterClose>
           </configuration>
         </plugin>
         <plugin>
@@ -276,6 +287,16 @@
           <groupId>com.soebes.maven.plugins</groupId>
           <artifactId>iterator-maven-plugin</artifactId>
           <version>0.3</version>
+        </plugin>
+        <plugin>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <configuration>
+            <properties>
+              <copyright-years>${project.inceptionYear}-2020</copyright-years>
+            </properties>
+            <header>${session.executionRootDirectory}/.license-header.txt</header>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

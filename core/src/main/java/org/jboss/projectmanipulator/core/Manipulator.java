@@ -55,6 +55,6 @@ public interface Manipulator<R> {
      *
      * @return collection of dependencies' classes
      */
-    Collection<Class<? extends Manipulator<R>>> getDependencies();
+    Collection<Class<? extends Manipulator<R>>> getManipulatorDependencies();
 
 }

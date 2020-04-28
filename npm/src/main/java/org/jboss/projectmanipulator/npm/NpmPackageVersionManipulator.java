@@ -67,7 +67,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
     private ManipulationSession<NpmResult> session;
 
-    private List<Class<? extends Manipulator<NpmResult>>> dependencies;
+    private List<Class<? extends Manipulator<NpmResult>>> manipulatorDependencies;
 
     /**
      * The default public constructor.
@@ -214,15 +214,15 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     }
 
     @Override
-    public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
-        if (dependencies == null) {
-            dependencies = new ArrayList<>();
+    public Collection<Class<? extends Manipulator<NpmResult>>> getManipulatorDependencies() {
+        if (manipulatorDependencies == null) {
+            manipulatorDependencies = new ArrayList<>();
             if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl)
                     && !isEmpty(repositoryGroup)) {
-                dependencies.add(DAVersionsCollector.class);
+                manipulatorDependencies.add(DAVersionsCollector.class);
             }
         }
-        return dependencies;
+        return manipulatorDependencies;
     }
 
 }

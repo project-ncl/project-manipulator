@@ -17,6 +17,8 @@
  */
 package org.jboss.projectmanipulator.npm;
 
+import java.util.Map;
+
 import org.jboss.projectmanipulator.core.ManipulationException;
 import org.jboss.projectmanipulator.core.Project;
 
@@ -45,5 +47,32 @@ public interface NpmPackage extends Project {
      * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
      */
     void setVersion(String version) throws ManipulationException;
+
+    /**
+     * Retrieves the dependencies from loaded package file.
+     *
+     * @return retrieved dependencies
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
+     */
+    Map<String, String> getDependencies() throws ManipulationException;
+
+    /**
+     * Retrieves the devDependencies from loaded package file.
+     *
+     * @return retrieved devDependencies
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
+     */
+    Map<String, String> getDevDependencies() throws ManipulationException;
+
+    /**
+     * Updates the dependency version in the loaded package file.
+     *
+     * @param dependencyName the name of the dependency to be changed
+     * @param version the version to be set
+     * @param isDevelopment whether the change needs to be applied in the `dependencies` or `devDependencies` list
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
+     */
+    void setDependencyVersion(String dependencyName, String version, boolean isDevelopment) throws ManipulationException;
+
 
 }

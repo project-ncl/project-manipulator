@@ -66,7 +66,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
 
             @SuppressWarnings("unchecked")
             Manipulator<NpmResult>[] allManipulators = new Manipulator[] { new NpmPackageVersionManipulator(),
-                    new DAVersionsCollector() };
+                    new NpmDependenciesManipulator(), new DAVersionsCollector() };
             for (Manipulator<NpmResult> manipulator : allManipulators) {
                 if (manipulator.init(this)) {
                     manipulators.add(manipulator);
@@ -120,9 +120,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
                 result.setVersion(pack.getVersion());
             } catch (ManipulationException e) {
                 throw new IllegalArgumentException(
-                        "The project data could not be read from the package file " + pkg + "\nError: "
-                                + e.getMessage(),
-                        e);
+                        "The project data could not be read from the package file " + pkg + "\nError: " + e.getMessage(), e);
             }
         } else {
             logger.error("Given package path %s does not exist.", pkg);

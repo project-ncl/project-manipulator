@@ -248,7 +248,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     @Override
-    public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
+    public Collection<Class<? extends Manipulator<NpmResult>>> getManipulatorDependencies() {
         return Collections.emptyList();
     }
 

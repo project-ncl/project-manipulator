@@ -123,7 +123,7 @@ public class ManipulationManager<R> {
      * @return true if none of the dependencies is in the todo set, otherwise false
      */
     private boolean dependenciesDone(Manipulator<R> manipulator, Set<Manipulator<R>> todo) {
-        for (Class<? extends Manipulator<R>> dependencyClass : manipulator.getDependencies()) {
+        for (Class<? extends Manipulator<R>> dependencyClass : manipulator.getManipulatorDependencies()) {
             for (Manipulator<R> todoMan : todo) {
                 if (dependencyClass.isAssignableFrom(todoMan.getClass())) {
                     return false;

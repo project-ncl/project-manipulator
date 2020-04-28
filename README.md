@@ -38,6 +38,8 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | versionOverride | Desired version used as the output of version manipulation overriding all the logic. If set, the manipulation only updates project version to this and does not do anything else (no communication with Dependency Analysis, no suffix computation etc). |
 | versionSuffixOverride | Desired version suffix, that will be appended to the current version. It overrides the logic computing the suffix number automatically. |
 | manipulation.disable | default: false, specify whether you want to disable the manipulation of the version or not |
+| dependencyOverride.$package_name | Desired version(s) to apply to the specified package(s), if listed inside the _dependencies_ in package.json. Does not replace the values in lock files. Example: `-DdependencyOverride.keycloak-admin-client=^0.12.0 -DdependencyOverride.async=1.5.2`|
+| devDependencyOverride.$package_name | Desired version(s) to apply to the specified package(s), if listed inside the _devDependencies_ in package.json. Does not replace the values in lock files. Example: `-DdevDependencyOverride.keycloak-admin-client=^0.12.0`|
 
 
 # Notes

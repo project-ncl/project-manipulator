@@ -37,7 +37,7 @@ import java.util.Set;
  * {@link Manipulator} implementation that can modify an NPM project's dependencies and devDependencies with provided
  * version. Format: -DdependencyOverride.[package_name]=[version] and -DdevDependencyOverride.[package_name]=[version]
  */
-public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
+public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
 
     /** The separator that's used between the override property and the package name. */
     public static final String OVERRIDE_PROPERTY_SEPARATOR = ".";
@@ -59,7 +59,7 @@ public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
     /**
      * The default public constructor.
      */
-    public NpmDependenciesManipulator() {
+    public NpmDependencyVersionManipulator() {
         dependenciesMap = new LinkedHashMap<String, String>();
         devDependenciesMap = new LinkedHashMap<String, String>();
     }
@@ -70,7 +70,9 @@ public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
      * @param dependenciesMap user provided list of dependency and versions to be overridden
      * @param devDependenciesMap user provided list of dev dependency and versions to be overridden
      */
-    public NpmDependenciesManipulator(Map<String, String> dependenciesMap, Map<String, String> devDependenciesMap) {
+    public NpmDependencyVersionManipulator(
+            Map<String, String> dependenciesMap,
+            Map<String, String> devDependenciesMap) {
         this.dependenciesMap = dependenciesMap;
         this.devDependenciesMap = devDependenciesMap;
         this.session = new NpmManipulationSession();

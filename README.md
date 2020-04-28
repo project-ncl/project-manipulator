@@ -32,6 +32,8 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | Java Property | Description |
 | --- | --- |
 | restURL | Dependency Analysis REST URL (e.g http://da.url.com/da/rest/v-1). It is used and required when user wants to perform automatic version increment. |
+| restConnectionTimeout | Optional connection timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 30 seconds.|
+| restSocketTimeout | Optional socket timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 10 minutes.|
 | repositoryGroup | A repository group used by Dependency Analysis to read existing versions with the same base version and suffix. It is used and required when user wants to perform automatic version increment. |
 | versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. |
 | versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. |

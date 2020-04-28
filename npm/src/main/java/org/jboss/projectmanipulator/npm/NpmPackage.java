@@ -72,7 +72,7 @@ public interface NpmPackage extends Project {
      * @param isDevelopment whether the change needs to be applied in the `dependencies` or `devDependencies` list
      * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
      */
-    void setDependencyVersion(String dependencyName, String version, boolean isDevelopment) throws ManipulationException;
-
+    void setDependencyVersion(String dependencyName, String version, boolean isDevelopment)
+            throws ManipulationException;
 
 }

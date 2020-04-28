@@ -159,7 +159,10 @@ public class NpmPackageImpl implements NpmPackage {
         getPackage();
         JsonNode jsonName = packageJson.get("name");
         if (jsonName == null) {
-            throw new ManipulationException("The loaded project file %s does not contain field 'name'.", null, packageFile);
+            throw new ManipulationException(
+                    "The loaded project file %s does not contain field 'name'.",
+                    null,
+                    packageFile);
         }
         return jsonName.asText();
     }
@@ -169,7 +172,10 @@ public class NpmPackageImpl implements NpmPackage {
         getPackage();
         JsonNode jsonVersion = packageJson.get("version");
         if (jsonVersion == null) {
-            throw new ManipulationException("The loaded project file %s does not contain field 'version'.", null, packageFile);
+            throw new ManipulationException(
+                    "The loaded project file %s does not contain field 'version'.",
+                    null,
+                    packageFile);
         }
         return jsonVersion.asText();
     }
@@ -195,14 +201,18 @@ public class NpmPackageImpl implements NpmPackage {
         if (packageJson instanceof ObjectNode) {
             ((ObjectNode) packageJson).replace("version", new TextNode(version));
         } else {
-            throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null,
+            throw new ManipulationException(
+                    "The loaded project file %s does not seem to have correct structure.",
+                    null,
                     packageFile);
         }
         if (packageLockJson != null) {
             if (packageLockJson instanceof ObjectNode) {
                 ((ObjectNode) packageLockJson).replace("version", new TextNode(version));
             } else {
-                throw new ManipulationException("The loaded project file %s does not seem to have correct structure.", null,
+                throw new ManipulationException(
+                        "The loaded project file %s does not seem to have correct structure.",
+                        null,
                         packageLockFile);
             }
         }

@@ -34,8 +34,8 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * {@link Manipulator} implementation that can modify an NPM project's dependencies and devDependencies with provided version.
- * Format: -DdependencyOverride.[package_name]=[version] and -DdevDependencyOverride.[package_name]=[version]
+ * {@link Manipulator} implementation that can modify an NPM project's dependencies and devDependencies with provided
+ * version. Format: -DdependencyOverride.[package_name]=[version] and -DdevDependencyOverride.[package_name]=[version]
  */
 public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
 
@@ -83,22 +83,30 @@ public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
         Properties userProps = session.getUserProps();
         if (userProps != null) {
             // Get the dependencies override versions
-            userProps.keySet().stream()
+            userProps.keySet()
+                    .stream()
                     .filter(key -> key.toString().startsWith(DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR))
                     .forEach(key -> {
                         String version = userProps.getProperty(key.toString());
                         dependenciesMap.put(
-                                key.toString().substring((DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR).length()),
+                                key.toString()
+                                        .substring((DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR).length()),
                                 version);
                     });
 
             // Get the development dependencies override versions
-            userProps.keySet().stream()
-                    .filter(key -> key.toString().startsWith(DEV_DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR))
+            userProps.keySet()
+                    .stream()
+                    .filter(
+                            key -> key.toString()
+                                    .startsWith(DEV_DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR))
                     .forEach(key -> {
                         String version = userProps.getProperty(key.toString());
-                        devDependenciesMap.put(key.toString()
-                                .substring((DEV_DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR).length()), version);
+                        devDependenciesMap.put(
+                                key.toString()
+                                        .substring(
+                                                (DEV_DEPENDENCY_OVERRIDE_PARAM + OVERRIDE_PROPERTY_SEPARATOR).length()),
+                                version);
                     });
 
             return !dependenciesMap.isEmpty() || devDependenciesMap.isEmpty();
@@ -125,14 +133,20 @@ public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
                             try {
                                 if (!currentVersion.equals(overrideVersion)) {
                                     npmPackage.setDependencyVersion(dependency, dependenciesMap.get(dependency), false);
-                                    logger.debug("Changing version of dependency `{}` from `{}` to `{}`", dependency,
-                                            currentVersion, overrideVersion);
+                                    logger.debug(
+                                            "Changing version of dependency `{}` from `{}` to `{}`",
+                                            dependency,
+                                            currentVersion,
+                                            overrideVersion);
                                     session.getResult().getDependenciesMap().put(dependency, overrideVersion);
                                     changed.add(npmPackage);
                                 }
                             } catch (ManipulationException e) {
-                                logger.error("Could not change version of dependency `{}` from `{}` to `{}`", dependency,
-                                        currentVersion, overrideVersion);
+                                logger.error(
+                                        "Could not change version of dependency `{}` from `{}` to `{}`",
+                                        dependency,
+                                        currentVersion,
+                                        overrideVersion);
                             }
                         }
                     });
@@ -147,23 +161,34 @@ public class NpmDependenciesManipulator implements Manipulator<NpmResult> {
 
                             try {
                                 if (!currentVersion.equals(overrideVersion)) {
-                                    npmPackage.setDependencyVersion(devDependency, devDependenciesMap.get(devDependency), true);
-                                    logger.debug("Changing version of devDependency `{}` from `{}` to `{}`", devDependency,
-                                            currentVersion, overrideVersion);
-                                    session.getResult().getDevDependenciesMap().put(devDependency,
-                                            devDependenciesMap.get(devDependency));
+                                    npmPackage.setDependencyVersion(
+                                            devDependency,
+                                            devDependenciesMap.get(devDependency),
+                                            true);
+                                    logger.debug(
+                                            "Changing version of devDependency `{}` from `{}` to `{}`",
+                                            devDependency,
+                                            currentVersion,
+                                            overrideVersion);
+                                    session.getResult()
+                                            .getDevDependenciesMap()
+                                            .put(devDependency, devDependenciesMap.get(devDependency));
                                     changed.add(npmPackage);
                                 }
                             } catch (ManipulationException e) {
-                                logger.error("Could not change version of devDependency `{}` from `{}` to `{}`", devDependency,
-                                        currentVersion, overrideVersion);
+                                logger.error(
+                                        "Could not change version of devDependency `{}` from `{}` to `{}`",
+                                        devDependency,
+                                        currentVersion,
+                                        overrideVersion);
                             }
                         }
                     });
                 }
             } else {
                 throw new ManipulationException(
-                        "Manipulation failed, because project type %s is not supported by NPM manipulation.", null,
+                        "Manipulation failed, because project type %s is not supported by NPM manipulation.",
+                        null,
                         project.getClass());
             }
         }

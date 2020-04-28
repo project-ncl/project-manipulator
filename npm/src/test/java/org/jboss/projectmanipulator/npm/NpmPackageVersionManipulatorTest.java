@@ -48,8 +48,8 @@ import org.junit.Test;
 public class NpmPackageVersionManipulatorTest {
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the available
-     * version set is empty.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is empty.
      */
     @Test
     public void findHighestIncrementalNumWithNoAvailableVersions() {
@@ -62,9 +62,9 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the available
-     * version set is not empty, but contains only versions with non-matching major-minor-patch combination or with matching
-     * one, but non-matching suffix.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is not empty, but contains only versions with non-matching major-minor-patch combination or
+     * with matching one, but non-matching suffix.
      */
     @Test
     public void findHighestIncrementalNumWithNoMatchingAvailableVersions() {
@@ -79,9 +79,9 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 2 when the available
-     * version set is not empty and contains a version with non-matching suffix and 2 matching ones with 00001 and 00002 after
-     * it.
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 2 when the
+     * available version set is not empty and contains a version with non-matching suffix and 2 matching ones with 00001
+     * and 00002 after it.
      */
     @Test
     public void findHighestIncrementalNumWithMatchingAvailableVersion() {
@@ -97,8 +97,8 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to get
-     * 1.0.0-jboss-00001.
+     * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to
+     * get 1.0.0-jboss-00001.
      */
     @Test
     public void generateNewVersionWhenNoSuffixedExists() {
@@ -110,8 +110,8 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests generation of new version when there are pre-existing suffixed versions - jboss-1 and jboss-00002. For version
-     * 1.0.0 it expects to get 1.0.0-jboss-00003.
+     * Tests generation of new version when there are pre-existing suffixed versions - jboss-1 and jboss-00002. For
+     * version 1.0.0 it expects to get 1.0.0-jboss-00003.
      */
     @Test
     public void generateNewVersionWithAvailableSuffixedVersions() {
@@ -127,8 +127,9 @@ public class NpmPackageVersionManipulatorTest {
 
     /**
      * Tests generation of new version for version that already contains the suffix when there are pre-existing suffixed
-     * versions - jboss-1 and jboss-00002. It expects that the original suffix will be removed and replaced by the generated one
-     * based on the highest available version, so for version 1.0.0-jboss-00004 it expects to get 1.0.0-jboss-00003.
+     * versions - jboss-1 and jboss-00002. It expects that the original suffix will be removed and replaced by the
+     * generated one based on the highest available version, so for version 1.0.0-jboss-00004 it expects to get
+     * 1.0.0-jboss-00003.
      */
     @Test
     public void generateNewVersionForSuffixedVersionWithPreexistingSuffixedVersions() {
@@ -149,7 +150,11 @@ public class NpmPackageVersionManipulatorTest {
     @Test
     public void getNewVersionOverride() {
         String versionOverride = "2.0.0-foo-001";
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, "bar-02", versionOverride);
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(
+                "jboss",
+                5,
+                "bar-02",
+                versionOverride);
 
         Set<String> availableSet = new HashSet<>();
         availableSet.add("1.0.0-jboss-1");
@@ -159,8 +164,8 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests applying the version update with an override. It sets also versionSuffix and versionSuffixOverride, which should be
-     * both ignored and the result should be only the overriden version.
+     * Tests applying the version update with an override. It sets also versionSuffix and versionSuffixOverride, which
+     * should be both ignored and the result should be only the overriden version.
      *
      * @throws ManipulationException in case of an error
      */
@@ -245,7 +250,9 @@ public class NpmPackageVersionManipulatorTest {
         userDevDependenciesMap.put("grunt-fh-build", "~2.0.0");
         userDevDependenciesMap.put("istanbul", "0.4.5-redhat-00001");
 
-        NpmDependenciesManipulator manipulator = new NpmDependenciesManipulator(userDependenciesMap, userDevDependenciesMap);
+        NpmDependenciesManipulator manipulator = new NpmDependenciesManipulator(
+                userDependenciesMap,
+                userDevDependenciesMap);
 
         List<Project> projects = new ArrayList<>();
         NpmPackage npmPackage = new NpmPackageImpl(packageJson, null);

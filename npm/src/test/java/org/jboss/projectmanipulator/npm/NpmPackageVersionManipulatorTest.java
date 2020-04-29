@@ -20,18 +20,19 @@
  */
 package org.jboss.projectmanipulator.npm;
 
-import org.jboss.projectmanipulator.core.ManipulationException;
-import org.jboss.projectmanipulator.core.Project;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.jboss.projectmanipulator.core.ManipulationException;
+import org.jboss.projectmanipulator.core.Project;
+import org.junit.Test;
 
 /**
  * Test class for {@link NpmPackageVersionManipulator}.
@@ -190,10 +191,28 @@ public class NpmPackageVersionManipulatorTest {
             public void setVersion(String version) throws ManipulationException {
                 this.version = version;
             }
+
+            @Override
+            public Map<String, String> getDependencies() throws ManipulationException {
+                return Collections.emptyMap();
+
+            }
+
+            @Override
+            public Map<String, String> getDevDependencies() throws ManipulationException {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public void setDependencyVersion(String dependencyName, String version, boolean isDevelopment)
+                    throws ManipulationException {
+            }
+
         });
         Set<Project> changed = manipulator.applyChanges(projects);
 
         assertThat(1, is(changed.size()));
         assertThat(versionOverride, is(((NpmPackage) changed.iterator().next()).getVersion()));
     }
+
 }

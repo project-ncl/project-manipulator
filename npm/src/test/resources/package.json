@@ -1,0 +1,37 @@
+{
+	"name": "pnc-example",
+	"version": "2.0.0-BUILD-NUMBER",
+	"description": "",
+	"main": "index.js",
+	"author": "Andrea Vibelli",
+	"license": "Apache-2.0",
+	"scripts": {
+		"install": "scripts/install.sh",
+		"postinstall": "scripts/postinstall.sh",
+		"preshrinkwrap": "npm cache clean && npm ls",
+		"postshrinkwrap": "license-reporter save --full-dependency-tree --xml licenses.xml && license-reporter report --full-dependency-tree --silent",
+		"start": "node fh-mbaas.js config/conf.json --master-only"
+	},
+	"engines": {
+		"node": "6.9"
+	},
+	"preferGlobal": true,
+	"dependencies": {
+		"archiver": "1.2",
+		"cors": "3.7.1",
+		"express": "4.16.3",
+		"express-bunyan-logger": "1.2.3",
+		"keycloak-admin-client": "^0.0.1"
+	},
+	"devDependencies": {
+		"deep-equal": "~1.0.1",
+		"express": "4.16.3",
+		"grunt": "~1.0.0",
+		"grunt-fh-build": "~2",
+		"istanbul": "0.4.5"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:project-ncl/project-manipulator.git"
+	}
+}

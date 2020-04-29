@@ -61,6 +61,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     public static final String AVAILABLE_VERSIONS = "availableVersions";
 
+    public static final long DEFAULT_CONNECTION_TIMEOUT_SEC = 30;
+
+    public static final long DEFAULT_SOCKET_TIMEOUT_SEC = 600;
+
     private static final Random RANDOM = new Random();
 
     private static final Base32 CODEC = new Base32();
@@ -75,10 +79,20 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String versionIncrementalSuffix;
 
+    private long connectionTimeout = DEFAULT_CONNECTION_TIMEOUT_SEC;
+
+    private long socketTimeout = DEFAULT_SOCKET_TIMEOUT_SEC;
+
     @Override
     public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
         this.session = session;
         Properties userProps = session.getUserProps();
+
+        this.connectionTimeout = Long.parseLong(
+                userProps.getProperty("restConnectionTimeout", String.valueOf(DEFAULT_CONNECTION_TIMEOUT_SEC)));
+        this.socketTimeout = Long
+                .parseLong(userProps.getProperty("restSocketTimeout", String.valueOf(DEFAULT_SOCKET_TIMEOUT_SEC)));
+
         String versionOverride = userProps.getProperty("versionOverride");
         if (isEmpty(versionOverride)) {
             String versionSuffixOverride = userProps.getProperty("versionSuffixOverride");
@@ -137,10 +151,13 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     private void init(ObjectMapper objectMapper) {
+
         // According to https://github.com/Mashape/unirest-java the default connection timeout is 10000
         // and the default socketTimeout is 60000.
-        // We have increased the first to 30 seconds and the second to 10 minutes.
-        Unirest.setTimeouts(30000, 600000);
+        // If not specified via properties, the values will be increased by default to 30 seconds for the first and 10
+        // minutes
+        // for the second.
+        Unirest.setTimeouts(connectionTimeout * 1000, socketTimeout * 1000);
         Unirest.setObjectMapper(objectMapper);
     }
 
@@ -248,7 +265,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     @Override
-    public Collection<Class<? extends Manipulator<NpmResult>>> getDependencies() {
+    public Collection<Class<? extends Manipulator<NpmResult>>> getManipulatorDependencies() {
         return Collections.emptyList();
     }
 

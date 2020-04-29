@@ -34,6 +34,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class NpmPackageImpl implements NpmPackage {
 
@@ -44,6 +49,8 @@ public class NpmPackageImpl implements NpmPackage {
 
     private JsonNode packageJson;
     private JsonNode packageLockJson;
+    private JsonNode dependencies;
+    private JsonNode devDependencies;
 
     private ObjectMapper mapper;
 
@@ -57,7 +64,7 @@ public class NpmPackageImpl implements NpmPackage {
         super();
         this.packageFile = packageFile;
         this.packageLockFile = packageLockFile;
-        mapper = new ObjectMapper();
+        this.mapper = new ObjectMapper();
     }
 
     /**
@@ -174,6 +181,20 @@ public class NpmPackageImpl implements NpmPackage {
     }
 
     @Override
+    public Map<String, String> getDependencies() throws ManipulationException {
+        getPackage();
+        dependencies = packageJson.get("dependencies");
+        return createDependenciesMap(dependencies);
+    }
+
+    @Override
+    public Map<String, String> getDevDependencies() throws ManipulationException {
+        getPackage();
+        devDependencies = packageJson.get("devDependencies");
+        return createDependenciesMap(devDependencies);
+    }
+
+    @Override
     public void setVersion(String version) throws ManipulationException {
         getPackage();
         getPackageLock();
@@ -193,6 +214,48 @@ public class NpmPackageImpl implements NpmPackage {
                         "The loaded project file %s does not seem to have correct structure.",
                         null,
                         packageLockFile);
+            }
+        }
+    }
+
+    @Override
+    public void setDependencyVersion(String dependencyName, String version, boolean isDevelopment)
+            throws ManipulationException {
+        getPackage();
+
+        if (isDevelopment) {
+            devDependencies = packageJson.get("devDependencies");
+            replaceDependency(devDependencies, dependencyName, version);
+        } else {
+            dependencies = packageJson.get("dependencies");
+            replaceDependency(dependencies, dependencyName, version);
+        }
+    }
+
+    private Map<String, String> createDependenciesMap(JsonNode dependenciesNode) {
+        Map<String, String> dependenciesMap = new LinkedHashMap<String, String>();
+        if (dependenciesNode != null) {
+            if (dependenciesNode instanceof ObjectNode) {
+                Iterator<Entry<String, JsonNode>> iterator = ((ObjectNode) dependenciesNode).fields();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, JsonNode> devDependency = iterator.next();
+                    dependenciesMap.put(devDependency.getKey().toString(), devDependency.getValue().asText());
+                }
+            }
+        }
+        return Collections.unmodifiableMap(dependenciesMap);
+    }
+
+    private void replaceDependency(JsonNode dependenciesNode, String dependencyName, String version) {
+        if (dependenciesNode != null) {
+            if (dependenciesNode instanceof ObjectNode) {
+                Iterator<Entry<String, JsonNode>> iterator = ((ObjectNode) dependenciesNode).fields();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, JsonNode> dependency = iterator.next();
+                    if (dependency.getKey().toString().equals(dependencyName)) {
+                        dependency.setValue(new TextNode(version));
+                    }
+                }
             }
         }
     }

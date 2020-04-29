@@ -17,6 +17,9 @@
  */
 package org.jboss.projectmanipulator.npm;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Represents result of manipulation.
  */
@@ -27,6 +30,12 @@ public class NpmResult {
 
     /** Resulting package version. */
     private String version;
+
+    /** Modified depedencies version. */
+    private Map<String, String> dependenciesMap = new LinkedHashMap<String, String>();
+
+    /** Modified devDepedencies version. */
+    private Map<String, String> devDependenciesMap = new LinkedHashMap<String, String>();
 
     public String getName() {
         return name;
@@ -42,6 +51,22 @@ public class NpmResult {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Map<String, String> getDependenciesMap() {
+        return dependenciesMap;
+    }
+
+    public void setDependenciesMap(Map<String, String> dependenciesMap) {
+        this.dependenciesMap = dependenciesMap;
+    }
+
+    public Map<String, String> getDevDependenciesMap() {
+        return devDependenciesMap;
+    }
+
+    public void setDevDependenciesMap(Map<String, String> devDependenciesMap) {
+        this.devDependenciesMap = devDependenciesMap;
     }
 
 }

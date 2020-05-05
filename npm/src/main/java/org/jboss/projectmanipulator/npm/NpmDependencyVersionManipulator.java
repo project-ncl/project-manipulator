@@ -111,7 +111,7 @@ public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
                                 version);
                     });
 
-            return !dependenciesMap.isEmpty() || devDependenciesMap.isEmpty();
+            return !dependenciesMap.isEmpty() || !devDependenciesMap.isEmpty();
         }
 
         return false;

@@ -51,6 +51,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     /** The separator that's used between the suffix and the generated build number. */
     public static final String SUFFIX_INCREMENT_SEPARATOR = "-";
 
+    public static final int DEFAULT_VERSION_INCREMENTAL_SUFFIX_PADDING = 5;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String versionIncrementalSuffix;
@@ -111,12 +113,13 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                         userProps.getProperty("versionIncrementalSuffixPadding"));
             } catch (NumberFormatException ex) {
                 logger.warn(
-                        "Invalid number provided in versionIncrementalSuffixPadding \'"
-                                + userProps.getProperty("versionIncrementalSuffixPadding") + "\'. Using 1.");
+                        "Invalid number provided in versionIncrementalSuffixPadding \'{}\'. Using {}.",
+                        userProps.getProperty("versionIncrementalSuffixPadding"),
+                        DEFAULT_VERSION_INCREMENTAL_SUFFIX_PADDING);
                 logger.debug("Error was: {}", ex.getMessage(), ex);
             }
             if (versionIncrementalSuffixPadding == null) {
-                versionIncrementalSuffixPadding = 1;
+                versionIncrementalSuffixPadding = DEFAULT_VERSION_INCREMENTAL_SUFFIX_PADDING;
             }
 
             return !isEmpty(versionOverride) || !isEmpty(versionSuffixOverride)

@@ -65,8 +65,10 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
             manipulators = new ArrayList<>();
 
             @SuppressWarnings("unchecked")
-            Manipulator<NpmResult>[] allManipulators = new Manipulator[] { new NpmPackageVersionManipulator(),
-                    new NpmDependencyVersionManipulator(), new DAVersionsCollector() };
+            Manipulator<NpmResult>[] allManipulators = new Manipulator[] {
+                    new NpmPackageVersionManipulator(),
+                    new NpmDependencyVersionManipulator(),
+                    new DAVersionsCollector() };
             for (Manipulator<NpmResult> manipulator : allManipulators) {
                 if (manipulator.init(this)) {
                     manipulators.add(manipulator);

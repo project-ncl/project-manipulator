@@ -104,7 +104,6 @@ public class ManipulationManager<R> {
             throw new ManipulationException(
                     "A dependency cycle has been found, so manipulation cannot be finished. "
                             + "Remaining manipulators are: %s",
-                    null,
                     todo);
         }
 

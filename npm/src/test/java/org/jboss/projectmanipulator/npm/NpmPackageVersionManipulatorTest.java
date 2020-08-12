@@ -21,6 +21,8 @@
 package org.jboss.projectmanipulator.npm;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.jboss.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.HYPHENED;
+import static org.jboss.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -46,8 +48,8 @@ public class NpmPackageVersionManipulatorTest {
      * available version set is empty.
      */
     @Test
-    public void findHighestIncrementalNumWithNoAvailableVersions() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void findHighestIncrementalNumHyphenedWithNoAvailableVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
         Set<String> availableSet = new HashSet<>();
         int highestNum = manipulator.findHighestIncrementalNum("1.0.0", availableSet);
@@ -61,8 +63,8 @@ public class NpmPackageVersionManipulatorTest {
      * with matching one, but non-matching suffix.
      */
     @Test
-    public void findHighestIncrementalNumWithNoMatchingAvailableVersions() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void findHighestIncrementalNumHyphenedWithNoMatchingAvailableVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
         Set<String> availableSet = new HashSet<>();
         availableSet.add("1.0.1-jboss-1");
@@ -78,8 +80,8 @@ public class NpmPackageVersionManipulatorTest {
      * and 00002 after it.
      */
     @Test
-    public void findHighestIncrementalNumWithMatchingAvailableVersion() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void findHighestIncrementalNumHyphenedWithMatchingAvailableVersion() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
         Set<String> availableSet = new HashSet<>();
         availableSet.add("1.0.0-jboss-00001");
@@ -91,14 +93,63 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is empty.
+     */
+    @Test
+    public void findHighestIncrementalNumSemverWithNoAvailableVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        Set<String> availableSet = new HashSet<>();
+        int highestNum = manipulator.findHighestIncrementalNum("1.0.0", availableSet);
+
+        assertThat(0, is(highestNum));
+    }
+
+    /**
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 0 when the
+     * available version set is not empty, but contains only versions with non-matching major-minor-patch combination or
+     * with matching one, but non-matching suffix.
+     */
+    @Test
+    public void findHighestIncrementalNumSemverWithNoMatchingAvailableVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        Set<String> availableSet = new HashSet<>();
+        availableSet.add("1.0.1-jboss.1");
+        availableSet.add("1.0.0-ncl.1");
+        int highestNum = manipulator.findHighestIncrementalNum("1.0.0", availableSet);
+
+        assertThat(0, is(highestNum));
+    }
+
+    /**
+     * Tests that the {@link NpmPackageVersionManipulator#findHighestIncrementalNum(String, Set)} returns 2 when the
+     * available version set is not empty and contains a version with non-matching suffix and 2 matching ones with 00001
+     * and 00002 after it.
+     */
+    @Test
+    public void findHighestIncrementalNumSemverWithMatchingAvailableVersion() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        Set<String> availableSet = new HashSet<>();
+        availableSet.add("1.0.0-jboss.1");
+        availableSet.add("1.0.0-jboss.2");
+        availableSet.add("1.0.0-ncl.1");
+        int highestNum = manipulator.findHighestIncrementalNum("1.0.0", availableSet);
+
+        assertThat(2, is(highestNum));
+    }
+
+    /**
      * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to
      * get 1.0.0-jboss-00001.
      */
     @Test
-    public void generateNewVersionWhenNoSuffixedExists() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void generateNewHyphenedVersionWhenNoSuffixedExists() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
-        String newVersion = manipulator.generateNewVersion("1.0.0", Collections.emptySet());
+        String newVersion = manipulator.generateNewHyphenedVersion("1.0.0", Collections.emptySet());
 
         assertThat("1.0.0-jboss-00001", is(newVersion));
     }
@@ -108,13 +159,13 @@ public class NpmPackageVersionManipulatorTest {
      * version 1.0.0 it expects to get 1.0.0-jboss-00003.
      */
     @Test
-    public void generateNewVersionWithAvailableSuffixedVersions() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void generateNewHyphenedVersionWithAvailableSuffixedVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
         Set<String> availableSet = new HashSet<>();
         availableSet.add("1.0.0-jboss-1");
         availableSet.add("1.0.0-jboss-00002");
-        String newVersion = manipulator.generateNewVersion("1.0.0", availableSet);
+        String newVersion = manipulator.generateNewHyphenedVersion("1.0.0", availableSet);
 
         assertThat("1.0.0-jboss-00003", is(newVersion));
     }
@@ -126,15 +177,60 @@ public class NpmPackageVersionManipulatorTest {
      * 1.0.0-jboss-00003.
      */
     @Test
-    public void generateNewVersionForSuffixedVersionWithPreexistingSuffixedVersions() {
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator("jboss", 5, null, null);
+    public void generateNewHyphenedVersionForSuffixedVersionWithPreexistingSuffixedVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(HYPHENED, "jboss", 5, null, null);
 
         Set<String> availableSet = new HashSet<>();
         availableSet.add("1.0.0-jboss-1");
         availableSet.add("1.0.0-jboss-00002");
-        String newVersion = manipulator.generateNewVersion("1.0.0-jboss-00004", availableSet);
+        String newVersion = manipulator.generateNewHyphenedVersion("1.0.0-jboss-00004", availableSet);
 
         assertThat("1.0.0-jboss-00003", is(newVersion));
+    }
+
+    /**
+     * Tests generation of new version when there is no pre-existing suffixed version. For version 1.0.0 it expects to
+     * get 1.0.0-jboss-00001.
+     */
+    @Test
+    public void generateNewSemverVersionWhenNoSuffixedExists() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        String newVersion = manipulator.generateNewSemverVersion("1.0.0", Collections.emptySet());
+
+        assertThat(newVersion, is("1.0.0-jboss.1"));
+    }
+
+    /**
+     * Tests generation of new version when there are pre-existing suffixed versions - jboss-1 and jboss-00002. For
+     * version 1.0.0 it expects to get 1.0.0-jboss-00003.
+     */
+    @Test
+    public void generateNewSemverVersionWithAvailableSuffixedVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        Set<String> availableSet = new HashSet<>();
+        availableSet.add("1.0.0-jboss.2");
+        String newVersion = manipulator.generateNewSemverVersion("1.0.0", availableSet);
+
+        assertThat(newVersion, is("1.0.0-jboss.3"));
+    }
+
+    /**
+     * Tests generation of new version for version that already contains the suffix when there are pre-existing suffixed
+     * versions - jboss-1 and jboss-00002. It expects that the original suffix will be removed and replaced by the
+     * generated one based on the highest available version, so for version 1.0.0-jboss-00004 it expects to get
+     * 1.0.0-jboss-00003.
+     */
+    @Test
+    public void generateNewSemverVersionForSuffixedVersionWithPreexistingSuffixedVersions() {
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(SEMVER, "jboss", 5, null, null);
+
+        Set<String> availableSet = new HashSet<>();
+        availableSet.add("1.0.0-jboss.2");
+        String newVersion = manipulator.generateNewSemverVersion("1.0.0-jboss.4", availableSet);
+
+        assertThat(newVersion, is("1.0.0-jboss.3"));
     }
 
     /**
@@ -145,6 +241,7 @@ public class NpmPackageVersionManipulatorTest {
     public void getNewVersionOverride() {
         String versionOverride = "2.0.0-foo-001";
         NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(
+                null,
                 "jboss",
                 5,
                 "bar-02",
@@ -154,7 +251,7 @@ public class NpmPackageVersionManipulatorTest {
         availableSet.add("1.0.0-jboss-1");
         String newVersion = manipulator.getNewVersion("1.0.0", availableSet);
 
-        assertThat(versionOverride, is(newVersion));
+        assertThat(newVersion, is(versionOverride));
     }
 
     /**
@@ -166,10 +263,16 @@ public class NpmPackageVersionManipulatorTest {
     @Test
     public void applyChangesWithVersionOverride() throws ManipulationException {
         String versionOverride = "2.0.0-foo-001";
-        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(null, null, null, versionOverride);
+        NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(
+                null,
+                null,
+                null,
+                null,
+                versionOverride);
 
         List<Project> projects = new ArrayList<>();
         projects.add(new NpmPackage() {
+            private String name = "test";
             private String version = "1.0.0";
 
             @Override
@@ -179,12 +282,17 @@ public class NpmPackageVersionManipulatorTest {
 
             @Override
             public String getName() throws ManipulationException {
-                return "test";
+                return name;
             }
 
             @Override
             public String getVersion() throws ManipulationException {
                 return version;
+            }
+
+            @Override
+            public void setName(String name) throws ManipulationException {
+                this.name = name;
             }
 
             @Override
@@ -211,8 +319,8 @@ public class NpmPackageVersionManipulatorTest {
         });
         Set<Project> changed = manipulator.applyChanges(projects);
 
-        assertThat(1, is(changed.size()));
-        assertThat(versionOverride, is(((NpmPackage) changed.iterator().next()).getVersion()));
+        assertThat(changed.size(), is(1));
+        assertThat(((NpmPackage) changed.iterator().next()).getVersion(), is(versionOverride));
     }
 
 }

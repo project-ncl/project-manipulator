@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents one way that a project may be manipulated/modified during pre-processing.State is stored in the
+ * Represents one way that a project may be manipulated/modified during pre-processing. State is stored in the
  * {@link ManipulationSession} instance. State consists of both configuration (normally detected from the user
  * properties, or -D options on the command line), and also changes detected in the scan() method invocation that will
  * be applied later.

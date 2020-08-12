@@ -60,8 +60,8 @@ public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
      * The default public constructor.
      */
     public NpmDependencyVersionManipulator() {
-        dependenciesMap = new LinkedHashMap<String, String>();
-        devDependenciesMap = new LinkedHashMap<String, String>();
+        dependenciesMap = new LinkedHashMap<>();
+        devDependenciesMap = new LinkedHashMap<>();
     }
 
     /**
@@ -190,7 +190,6 @@ public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
             } else {
                 throw new ManipulationException(
                         "Manipulation failed, because project type %s is not supported by NPM manipulation.",
-                        null,
                         project.getClass());
             }
         }

@@ -75,12 +75,12 @@
     <projectEmail>ncl-dev@redhat.com</projectEmail>
 
     <version.commons-cli>1.4</version.commons-cli>
-    <version.commons-codec>1.6</version.commons-codec>
-    <version.commons-lang>2.5</version.commons-lang>
-    <version.commons-io>2.6</version.commons-io>
-    <version.jackson>2.9.9</version.jackson>
+    <version.commons-codec>1.14</version.commons-codec>
+    <version.commons-lang>2.6</version.commons-lang>
+    <version.commons-io>2.7</version.commons-io>
+    <version.jackson>2.9.10</version.jackson>
     <version.jackson-databind>2.9.10.5</version.jackson-databind>
-    <version.atlas>1.0.0</version.atlas>
+    <version.atlas>1.1.0</version.atlas>
   </properties>
 
   <dependencyManagement>

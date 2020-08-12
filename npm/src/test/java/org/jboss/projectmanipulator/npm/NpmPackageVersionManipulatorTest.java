@@ -236,9 +236,11 @@ public class NpmPackageVersionManipulatorTest {
     /**
      * Tests getting new version when the complete version is set to an override. It sets also versionSuffix and
      * versionSuffixOverride, which should be both ignored and the result should be only the overriden version.
+     * 
+     * @throws ManipulationException in case of an error
      */
     @Test
-    public void getNewVersionOverride() {
+    public void getNewVersionOverride() throws ManipulationException {
         String versionOverride = "2.0.0-foo-001";
         NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(
                 null,

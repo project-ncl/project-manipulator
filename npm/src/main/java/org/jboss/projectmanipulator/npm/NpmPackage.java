@@ -33,6 +33,14 @@ public interface NpmPackage extends Project {
     String getName() throws ManipulationException;
 
     /**
+     * Updates package name in the loaded package file and package-lock file.
+     *
+     * @param name the name to be set
+     * @throws ManipulationException in case the project cannot be loaded or does not have correct structure
+     */
+    void setName(String name) throws ManipulationException;
+
+    /**
      * Retrieves package version from loaded package file.
      *
      * @return retrieved version

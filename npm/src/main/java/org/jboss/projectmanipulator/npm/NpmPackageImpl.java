@@ -84,7 +84,7 @@ public class NpmPackageImpl implements NpmPackage {
                     throw new ManipulationException("Error reading file %s", ex, packageFile);
                 }
             } else {
-                throw new ManipulationException("Package file %s does not exist", null, packageFile.toString());
+                throw new ManipulationException("Package file %s does not exist", packageFile.toString());
             }
         }
         return packageJson;
@@ -159,10 +159,7 @@ public class NpmPackageImpl implements NpmPackage {
         getPackage();
         JsonNode jsonName = packageJson.get("name");
         if (jsonName == null) {
-            throw new ManipulationException(
-                    "The loaded project file %s does not contain field 'name'.",
-                    null,
-                    packageFile);
+            throw new ManipulationException("The loaded project file %s does not contain field 'name'.", packageFile);
         }
         return jsonName.asText();
     }
@@ -174,7 +171,6 @@ public class NpmPackageImpl implements NpmPackage {
         if (jsonVersion == null) {
             throw new ManipulationException(
                     "The loaded project file %s does not contain field 'version'.",
-                    null,
                     packageFile);
         }
         return jsonVersion.asText();
@@ -195,6 +191,28 @@ public class NpmPackageImpl implements NpmPackage {
     }
 
     @Override
+    public void setName(String name) throws ManipulationException {
+        getPackage();
+        getPackageLock();
+        if (packageJson instanceof ObjectNode) {
+            ((ObjectNode) packageJson).replace("name", new TextNode(name));
+        } else {
+            throw new ManipulationException(
+                    "The loaded project file %s does not seem to have correct structure.",
+                    packageFile);
+        }
+        if (packageLockJson != null) {
+            if (packageLockJson instanceof ObjectNode) {
+                ((ObjectNode) packageLockJson).replace("name", new TextNode(name));
+            } else {
+                throw new ManipulationException(
+                        "The loaded project file %s does not seem to have correct structure.",
+                        packageLockFile);
+            }
+        }
+    }
+
+    @Override
     public void setVersion(String version) throws ManipulationException {
         getPackage();
         getPackageLock();
@@ -203,7 +221,6 @@ public class NpmPackageImpl implements NpmPackage {
         } else {
             throw new ManipulationException(
                     "The loaded project file %s does not seem to have correct structure.",
-                    null,
                     packageFile);
         }
         if (packageLockJson != null) {
@@ -212,7 +229,6 @@ public class NpmPackageImpl implements NpmPackage {
             } else {
                 throw new ManipulationException(
                         "The loaded project file %s does not seem to have correct structure.",
-                        null,
                         packageLockFile);
             }
         }
@@ -233,7 +249,7 @@ public class NpmPackageImpl implements NpmPackage {
     }
 
     private Map<String, String> createDependenciesMap(JsonNode dependenciesNode) {
-        Map<String, String> dependenciesMap = new LinkedHashMap<String, String>();
+        Map<String, String> dependenciesMap = new LinkedHashMap<>();
         if (dependenciesNode != null) {
             if (dependenciesNode instanceof ObjectNode) {
                 Iterator<Entry<String, JsonNode>> iterator = ((ObjectNode) dependenciesNode).fields();

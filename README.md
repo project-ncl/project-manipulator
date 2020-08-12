@@ -35,8 +35,10 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | restConnectionTimeout | Optional connection timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 30 seconds.|
 | restSocketTimeout | Optional socket timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 10 minutes.|
 | repositoryGroup | A repository group used by Dependency Analysis to read existing versions with the same base version and suffix. It is used and required when user wants to perform automatic version increment. |
-| versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. |
-| versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. |
+| packageScope | A package scope that should be added. |
+| versioningStrategy | Versioning strategy can be either HYPHENED or SEMVER. The former uses hyphens between the original version, requested suffix and auto-incremented number, e.g. "1.2.3-jboss-001". The latter auto-increments the patch number to first available number and does not request suffix. If defined, it will also append it and add a build number separated by a dot resulting in SemVer pre-release format, e.g. "1.2.0-rc.1". It is mandatory when requesting automatic version increment. |
+| versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. It is mandatory with HYPHENED versioning strategy and optional with SEMVER one. |
+| versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. This is used only with HYPHENED versioning strategy. |
 | versionOverride | Desired version used as the output of version manipulation overriding all the logic. If set, the manipulation only updates project version to this and does not do anything else (no communication with Dependency Analysis, no suffix computation etc). |
 | versionSuffixOverride | Desired version suffix, that will be appended to the current version. It overrides the logic computing the suffix number automatically. |
 | manipulation.disable | default: false, specify whether you want to disable the manipulation of the version or not |

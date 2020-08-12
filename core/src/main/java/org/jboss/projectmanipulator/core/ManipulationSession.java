@@ -20,6 +20,13 @@ package org.jboss.projectmanipulator.core;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * The manipulation session supposed to store current state. State consists of both configuration (normally detected
+ * from the user properties, or -D options on the command line), and also changes detected in the scan() method
+ * invocation that will be applied later.
+ *
+ * @param <R> the generic type
+ */
 public interface ManipulationSession<R> {
 
     /**

@@ -73,6 +73,11 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private ManipulationSession<NpmResult> session;
 
+    private List<Class<? extends Manipulator<NpmResult>>> manipulatorDependencies;
+
+    /** The package scope to be added. */
+    private String packageScope;
+
     private String restURL;
 
     private String repositoryGroup;
@@ -87,6 +92,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
         this.session = session;
         Properties userProps = session.getUserProps();
+
+        this.packageScope = userProps.getProperty("packageScope");
 
         this.connectionTimeout = Long.parseLong(
                 userProps.getProperty("restConnectionTimeout", String.valueOf(DEFAULT_CONNECTION_TIMEOUT_SEC)));
@@ -266,7 +273,13 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     @Override
     public Collection<Class<? extends Manipulator<NpmResult>>> getManipulatorDependencies() {
-        return Collections.emptyList();
+        if (manipulatorDependencies == null) {
+            manipulatorDependencies = new ArrayList<>();
+            if (!isEmpty(packageScope)) {
+                manipulatorDependencies.add(NpmPackageScopeManipulator.class);
+            }
+        }
+        return manipulatorDependencies;
     }
 
 }

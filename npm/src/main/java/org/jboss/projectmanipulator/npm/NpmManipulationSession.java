@@ -67,6 +67,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
             @SuppressWarnings("unchecked")
             Manipulator<NpmResult>[] allManipulators = new Manipulator[] {
                     new NpmPackageVersionManipulator(),
+                    new NpmPackageScopeManipulator(),
                     new NpmDependencyVersionManipulator(),
                     new DAVersionsCollector() };
             for (Manipulator<NpmResult> manipulator : allManipulators) {

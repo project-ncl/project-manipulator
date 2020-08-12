@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNumeric;
@@ -45,11 +47,50 @@ import static org.apache.commons.lang.math.NumberUtils.createInteger;
  */
 public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
-    /** The separator that's used between the original version and the generated or provided suffix. */
-    public static final String SUFFIX_SEPARATOR = "-";
+    /**
+     * The separator that's used between the original version and the generated or provided suffix in HYPHENED
+     * versioning strategy.
+     */
+    public static final String HYPHENED_SEPARATOR = "-";
 
-    /** The separator that's used between the suffix and the generated build number. */
-    public static final String SUFFIX_INCREMENT_SEPARATOR = "-";
+    /**
+     * The separator that's used between the version numbers and the pre-release suffix in SEMVER versioning strategy.
+     */
+    public static final String SEMVER_PRERELEASE_SEPARATOR = "-";
+
+    /**
+     * The separator that's used between the pre-release suffix and the generated build number in SEMVER versioning
+     * strategy.
+     */
+    public static final String SEMVER_PRERELEASE_BUILDNUM_SEPARATOR = ".";
+
+    /**
+     * Version pattern matching the semantic versioning format for a final release version.
+     *
+     * <p>
+     * Groups are:
+     * <ul>
+     * <li>1 - major version</li>
+     * <li>2 - minor version</li>
+     * <li>3 - patch version</li>
+     * </ul>
+     */
+    private static final String SEMVER_FINAL_PATTERN = "^(\\d+)\\.(\\d+)\\.(\\d+)$";
+
+    /**
+     * Version pattern matching the semantic versioning format for apre-release version.
+     *
+     * <p>
+     * Groups are:
+     * <ul>
+     * <li>1 - major version</li>
+     * <li>2 - minor version</li>
+     * <li>3 - patch version</li>
+     * <li>4 - optional pre-release identifier</li>
+     * <li>5 - optional pre-release build number</li>
+     * </ul>
+     */
+    private static final String SEMVER_PRERELEASE_PATTERN = "^(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\w+)\\.(\\d+))?$";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -64,6 +105,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     private String versionSuffixOverride;
 
     private String versionOverride;
+
+    private VersioningStrategy versioningStrategy;
 
     private ManipulationSession<NpmResult> session;
 
@@ -84,10 +127,12 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
      * @param versionOverride initial value
      */
     NpmPackageVersionManipulator(
+            VersioningStrategy versioningStrategy,
             String versionIncrementalSuffix,
             Integer versionIncrementalSuffixPadding,
             String versionSuffixOverride,
             String versionOverride) {
+        this.versioningStrategy = versioningStrategy;
         this.versionIncrementalSuffix = versionIncrementalSuffix;
         this.versionIncrementalSuffixPadding = versionIncrementalSuffixPadding;
         this.versionSuffixOverride = versionSuffixOverride;
@@ -101,6 +146,17 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
         Properties userProps = session.getUserProps();
         if (userProps != null) {
+            String verStrategyStr = userProps.getProperty("versioningStrategy");
+            if (!isEmpty(verStrategyStr)) {
+                try {
+                    versioningStrategy = VersioningStrategy.valueOf(verStrategyStr);
+                } catch (RuntimeException ex) {
+                    logger.error(
+                            "Unknown versioning strategy: \'{}\'. Only version override will be applied.",
+                            verStrategyStr);
+                    logger.debug("Error was: " + ex.getMessage(), ex);
+                }
+            }
             versionOverride = userProps.getProperty("versionOverride");
             versionSuffixOverride = userProps.getProperty("versionSuffixOverride");
             restUrl = userProps.getProperty("restURL");
@@ -113,7 +169,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 logger.warn(
                         "Invalid number provided in versionIncrementalSuffixPadding \'"
                                 + userProps.getProperty("versionIncrementalSuffixPadding") + "\'. Using 1.");
-                logger.debug("Error was: {}", ex.getMessage(), ex);
+                logger.debug("Error was: " + ex.getMessage(), ex);
             }
             if (versionIncrementalSuffixPadding == null) {
                 versionIncrementalSuffixPadding = 1;
@@ -150,7 +206,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             } else {
                 throw new ManipulationException(
                         "Manipulation failed, because project type %s is not supported by NPM manipulation.",
-                        null,
                         project.getClass());
             }
         }
@@ -161,9 +216,21 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         String newVersion = null;
         if (isEmpty(versionOverride)) {
             if (isEmpty(versionSuffixOverride)) {
-                newVersion = generateNewVersion(origVersion, availablePkgVersions);
+                if (versioningStrategy != null) {
+                    switch (versioningStrategy) {
+                        case HYPHENED:
+                            newVersion = generateNewHyphenedVersion(origVersion, availablePkgVersions);
+                            break;
+
+                        case SEMVER:
+                            newVersion = generateNewSemverVersion(origVersion, availablePkgVersions);
+                            break;
+                    }
+                } else {
+                    logger.warn("No version strategy defined and no override provided. Skipping version manipulation.");
+                }
             } else {
-                newVersion = origVersion + SUFFIX_SEPARATOR + versionSuffixOverride;
+                newVersion = origVersion + HYPHENED_SEPARATOR + versionSuffixOverride;
             }
         } else {
             newVersion = versionOverride;
@@ -172,32 +239,29 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     }
 
     /**
-     * Generates a new suffixed version based on original version, available version for the given package, suffix
+     * Generates a new hyphened version based on original version, available version for the given package, suffix
      * string and suffix padding settings.
      *
-     * @param origVersion
-     * @param availablePkgVersions
-     * @return
+     * @param origVersion the original version
+     * @param availablePkgVersions set of available versions of this package
+     * @return the generated version
      */
-    String generateNewVersion(String origVersion, Set<String> availablePkgVersions) {
+    String generateNewHyphenedVersion(String origVersion, Set<String> availablePkgVersions) {
         String bareVersion = origVersion;
-        if (origVersion
-                .matches(".+" + SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+")) {
-            bareVersion = origVersion.replaceFirst(
-                    SUFFIX_SEPARATOR + versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR + "\\d+",
-                    "");
+        if (origVersion.matches(".+" + HYPHENED_SEPARATOR + versionIncrementalSuffix + HYPHENED_SEPARATOR + "\\d+")) {
+            bareVersion = origVersion
+                    .replaceFirst(HYPHENED_SEPARATOR + versionIncrementalSuffix + HYPHENED_SEPARATOR + "\\d+", "");
         }
         int suffixNum = findHighestIncrementalNum(bareVersion, availablePkgVersions) + 1;
-        String versionSuffix = versionIncrementalSuffix + SUFFIX_INCREMENT_SEPARATOR
+        String versionSuffix = versionIncrementalSuffix + HYPHENED_SEPARATOR
                 + leftPad(String.valueOf(suffixNum), versionIncrementalSuffixPadding, '0');
-        String newVersion = bareVersion + SUFFIX_SEPARATOR + versionSuffix;
+        String newVersion = bareVersion + HYPHENED_SEPARATOR + versionSuffix;
         return newVersion;
     }
 
     int findHighestIncrementalNum(String origVersion, Set<String> availableVersions) {
-        String lookupPrefix = origVersion + SUFFIX_SEPARATOR + versionIncrementalSuffix;
+        String lookupPrefix = origVersion + HYPHENED_SEPARATOR + versionIncrementalSuffix;
         int highestFoundNum = 0;
-        // if (availableVersions != null) {
         for (String version : availableVersions) {
             if (version.startsWith(lookupPrefix)) {
                 String incrementalPart = substring(version, lookupPrefix.length() + 1);
@@ -209,8 +273,58 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 }
             }
         }
-        // }
         return highestFoundNum;
+    }
+
+    /**
+     * Generates a new SemVer version based on original version, available version for the given package, suffix string
+     * and suffix padding settings.
+     *
+     * @param origVersion the original version
+     * @param availablePkgVersions set of available versions of this package
+     * @return the generated version
+     */
+    String generateNewSemverVersion(String origVersion, Set<String> availablePkgVersions) {
+        int patchNum = findHighestFinalPatchVersion(origVersion, availablePkgVersions) + 1;
+        String incrementedVersion = origVersion.replaceFirst(SEMVER_PRERELEASE_PATTERN, "$1.$2." + patchNum);
+
+        String newVersion;
+        if (!isEmpty(versionIncrementalSuffix)) {
+            int suffixNum = findHighestIncrementalNum(incrementedVersion, availablePkgVersions) + 1;
+            String versionSuffix = versionIncrementalSuffix + SEMVER_PRERELEASE_BUILDNUM_SEPARATOR + suffixNum;
+            newVersion = incrementedVersion + HYPHENED_SEPARATOR + versionSuffix;
+        } else {
+            newVersion = incrementedVersion;
+        }
+        return newVersion;
+    }
+
+    /**
+     * Finds the highest available final patch version.
+     *
+     * @param origVersion the orig version
+     * @param availableVersions the set of available versions
+     * @return found highest patch version, -1 if no patch with major.minor version is available
+     */
+    int findHighestFinalPatchVersion(String origVersion, Set<String> availableVersions) {
+        String lookupPrefix = origVersion.replaceFirst(SEMVER_PRERELEASE_PATTERN, "$1.$2.");
+        int highestPatch = -1;
+        String highestVersion = null;
+        Pattern finalSemverPattern = Pattern.compile(SEMVER_FINAL_PATTERN);
+        for (String version : availableVersions) {
+            if (version.startsWith(lookupPrefix)) {
+                Matcher matcher = finalSemverPattern.matcher(version);
+                if (matcher.matches()) {
+                    String incrementalPart = matcher.group(3);
+                    int foundNum = Integer.valueOf(incrementalPart);
+                    if (foundNum > highestPatch) {
+                        highestPatch = foundNum;
+                        highestVersion = version;
+                    }
+                }
+            }
+        }
+        return highestPatch;
     }
 
     @Override
@@ -223,6 +337,25 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             }
         }
         return manipulatorDependencies;
+    }
+
+    /** Enum of available versioning strategies. */
+    public enum VersioningStrategy {
+        /**
+         * Adds hyphen-separated suffix to the current version and adds optionally zero-padded highest existing number +
+         * 1.
+         */
+        HYPHENED,
+        /**
+         * Semantic versioning compliant strategy. Rewrites patch number to the highest existing number + 1, in case of
+         * prerelease also adds prerelease suffix and increments the build number to the highest existing number + 1.
+         */
+        SEMVER,
+        /**
+         * Overriding strategy indicating that either the whole version or the suffix is provided by caller, so no
+         * automatic version incrementing is done.
+         */
+        OVERRIDE;
     }
 
 }

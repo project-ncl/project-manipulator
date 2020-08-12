@@ -40,6 +40,7 @@ import static org.apache.commons.lang.StringUtils.isNumeric;
 import static org.apache.commons.lang.StringUtils.leftPad;
 import static org.apache.commons.lang.StringUtils.substring;
 import static org.apache.commons.lang.math.NumberUtils.createInteger;
+import static org.jboss.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 /**
  * {@link Manipulator} implementation that can modify an NPM project's version with either static or calculated,
@@ -176,7 +177,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             }
 
             return !isEmpty(versionOverride) || !isEmpty(versionSuffixOverride)
-                    || !isEmpty(restUrl) && !isEmpty(repositoryGroup) && !isEmpty(versionIncrementalSuffix);
+                    || !isEmpty(restUrl) && !isEmpty(repositoryGroup)
+                            && (versioningStrategy == SEMVER || !isEmpty(versionIncrementalSuffix));
         }
 
         return false;
@@ -212,7 +214,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         return changed;
     }
 
-    String getNewVersion(String origVersion, Set<String> availablePkgVersions) {
+    String getNewVersion(String origVersion, Set<String> availablePkgVersions) throws ManipulationException {
         String newVersion = null;
         if (isEmpty(versionOverride)) {
             if (isEmpty(versionSuffixOverride)) {
@@ -225,6 +227,11 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                         case SEMVER:
                             newVersion = generateNewSemverVersion(origVersion, availablePkgVersions);
                             break;
+
+                        default:
+                            throw new ManipulationException(
+                                    "Versioning strategy {} cannot be handled when versionOverride and "
+                                            + "versionSuffixOverride are empty.");
                     }
                 } else {
                     logger.warn("No version strategy defined and no override provided. Skipping version manipulation.");
@@ -304,12 +311,11 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
      *
      * @param origVersion the orig version
      * @param availableVersions the set of available versions
-     * @return found highest patch version, -1 if no patch with major.minor version is available
+     * @return found highest patch version, -1 if no patch with given major.minor version is available
      */
     int findHighestFinalPatchVersion(String origVersion, Set<String> availableVersions) {
         String lookupPrefix = origVersion.replaceFirst(SEMVER_PRERELEASE_PATTERN, "$1.$2.");
         int highestPatch = -1;
-        String highestVersion = null;
         Pattern finalSemverPattern = Pattern.compile(SEMVER_FINAL_PATTERN);
         for (String version : availableVersions) {
             if (version.startsWith(lookupPrefix)) {
@@ -319,7 +325,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                     int foundNum = Integer.valueOf(incrementalPart);
                     if (foundNum > highestPatch) {
                         highestPatch = foundNum;
-                        highestVersion = version;
                     }
                 }
             }

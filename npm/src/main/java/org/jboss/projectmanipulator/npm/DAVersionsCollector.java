@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_OK;
+import static org.jboss.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 /**
  * This Manipulator collects data from an external service while doesn't do any manipulations to the project
@@ -84,6 +85,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String versionIncrementalSuffix;
 
+    private String versioningStrategy;
+
     private long connectionTimeout = DEFAULT_CONNECTION_TIMEOUT_SEC;
 
     private long socketTimeout = DEFAULT_SOCKET_TIMEOUT_SEC;
@@ -109,7 +112,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                     repositoryGroup = userProps.getProperty("repositoryGroup");
                     if (!isEmpty(repositoryGroup)) {
                         versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
-                        if (!isEmpty(versionIncrementalSuffix)) {
+                        versioningStrategy = userProps.getProperty("versioningStrategy");
+                        if (!isEmpty(versionIncrementalSuffix) || SEMVER.name().equals(versioningStrategy)) {
                             return true;
                         }
                     }

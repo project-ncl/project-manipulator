@@ -201,6 +201,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 String newVersion = getNewVersion(origVersion, availablePkgVersions);
 
                 if (!origVersion.equals(newVersion)) {
+                    logger.info("Updating package version: {} -> {}", origVersion, newVersion);
                     npmPackage.setVersion(newVersion);
                     session.getResult().setVersion(newVersion);
                     changed.add(npmPackage);

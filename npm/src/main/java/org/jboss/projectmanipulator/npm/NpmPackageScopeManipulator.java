@@ -21,6 +21,8 @@ import org.jboss.projectmanipulator.core.ManipulationException;
 import org.jboss.projectmanipulator.core.ManipulationSession;
 import org.jboss.projectmanipulator.core.Manipulator;
 import org.jboss.projectmanipulator.core.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +43,8 @@ public class NpmPackageScopeManipulator implements Manipulator<NpmResult> {
 
     /** The separator that's used between the package scope and package name. */
     public static final String SCOPE_NAME_SEPARATOR = "/";
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** The package scope to be added. */
     private String packageScope;
@@ -87,6 +91,7 @@ public class NpmPackageScopeManipulator implements Manipulator<NpmResult> {
                 String newName = getScopedName(origName);
 
                 if (!origName.equals(newName)) {
+                    logger.info("Adding package scope: {} -> {}", origName, newName);
                     npmPackage.setName(newName);
                     session.getResult().setName(newName);
                     changed.add(npmPackage);

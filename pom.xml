@@ -296,6 +296,9 @@
               <copyright-years>${project.inceptionYear}-2020</copyright-years>
             </properties>
             <header>${session.executionRootDirectory}/.license-header.txt</header>
+            <excludes>
+                <exclude>**/eclipse-codeStyle.xml</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>

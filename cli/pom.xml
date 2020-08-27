@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.jboss.project-manipulator</groupId>
     <artifactId>project-manipulator-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>project-manipulator-cli</artifactId>

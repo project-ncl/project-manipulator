@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.jboss.project-manipulator</groupId>
     <artifactId>project-manipulator-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <artifactId>project-manipulator-npm</artifactId>

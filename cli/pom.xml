@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.project-manipulator</groupId>
+    <groupId>org.jboss.pnc.project-manipulator</groupId>
     <artifactId>project-manipulator-parent</artifactId>
     <version>1.0.2-SNAPSHOT</version>
   </parent>
@@ -33,11 +33,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.project-manipulator</groupId>
+      <groupId>org.jboss.pnc.project-manipulator</groupId>
       <artifactId>project-manipulator-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.project-manipulator</groupId>
+      <groupId>org.jboss.pnc.project-manipulator</groupId>
       <artifactId>project-manipulator-npm</artifactId>
     </dependency>
 
@@ -107,7 +107,7 @@
           <archive>
             <index>true</index>
             <manifest>
-              <mainClass>org.jboss.projectmanipulator.cli.Cli</mainClass>
+              <mainClass>org.jboss.pnc.projectmanipulator.cli.Cli</mainClass>
             </manifest>
           </archive>
           <descriptors>

@@ -29,7 +29,7 @@
 
   <groupId>org.jboss.pnc.project-manipulator</groupId>
   <artifactId>project-manipulator-parent</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Project Manipulator for NPM</name>

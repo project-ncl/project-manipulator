@@ -19,7 +19,6 @@ package org.jboss.pnc.projectmanipulator.npm.da;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.zafarkhaja.semver.Version;
-import com.mashape.unirest.http.ObjectMapper;
 
 import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
 import org.slf4j.Logger;
@@ -31,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReportMapper implements ObjectMapper {
+public class SuffixedReportMapper implements ReportObjectMapper {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +42,7 @@ public class ReportMapper implements ObjectMapper {
 
     private String errorString;
 
-    public ReportMapper(String repositoryGroup, String incrementalSerialSuffix) {
+    public SuffixedReportMapper(String repositoryGroup, String incrementalSerialSuffix) {
         this.repositoryGroup = repositoryGroup;
         this.versionSuffix = incrementalSerialSuffix;
     }
@@ -118,7 +117,7 @@ public class ReportMapper implements ObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new NVSchema(repositoryGroup, versionSuffix, requestBody);
+        request = new SuffixedNVSchema(repositoryGroup, versionSuffix, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);
@@ -127,6 +126,7 @@ public class ReportMapper implements ObjectMapper {
         }
     }
 
+    @Override
     public String getErrorString() {
         return errorString;
     }

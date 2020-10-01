@@ -30,7 +30,9 @@ import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
 import org.jboss.pnc.projectmanipulator.core.Manipulator;
 import org.jboss.pnc.projectmanipulator.core.Project;
 import org.jboss.pnc.projectmanipulator.npm.da.DAException;
-import org.jboss.pnc.projectmanipulator.npm.da.ReportMapper;
+import org.jboss.pnc.projectmanipulator.npm.da.ReportObjectMapper;
+import org.jboss.pnc.projectmanipulator.npm.da.SemverReportMapper;
+import org.jboss.pnc.projectmanipulator.npm.da.SuffixedReportMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -46,6 +48,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
@@ -152,7 +155,18 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         Map<NpmPackageRef, List<String>> restResult = null;
 
         try {
-            restResult = getAvailableVersions(restParam);
+            switch (VersioningStrategy.valueOf(versioningStrategy)) {
+                case SEMVER:
+                    restResult = getAvailableSemverVersions(restParam);
+                    break;
+                case HYPHENED:
+                    restResult = getAvailableSuffixedVersions(restParam);
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "Versioning strategy " + versioningStrategy + " is not supported by "
+                                    + getClass().getSimpleName());
+            }
         } finally {
             printFinishTime(start, (restResult != null));
         }
@@ -172,9 +186,23 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         Unirest.setObjectMapper(objectMapper);
     }
 
+    private Map<NpmPackageRef, List<String>> getAvailableSemverVersions(ArrayList<NpmPackageRef> restParam) {
+        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup);
+        String endpoint = "reports/versions/npm";
+        return getAvailableVersions(restParam, mapper, endpoint);
+    }
+
+    private Map<NpmPackageRef, List<String>> getAvailableSuffixedVersions(ArrayList<NpmPackageRef> restParam) {
+        SuffixedReportMapper mapper = new SuffixedReportMapper(repositoryGroup, versionIncrementalSuffix);
+        String endpoint = "reports/lookup/npm";
+        return getAvailableVersions(restParam, mapper, endpoint);
+    }
+
     @SuppressWarnings("unchecked")
-    private Map<NpmPackageRef, List<String>> getAvailableVersions(ArrayList<NpmPackageRef> restParam) {
-        ReportMapper mapper = new ReportMapper(repositoryGroup, versionIncrementalSuffix);
+    private Map<NpmPackageRef, List<String>> getAvailableVersions(
+            ArrayList<NpmPackageRef> restParam,
+            ReportObjectMapper mapper,
+            String endpoint) {
         init(mapper);
 
         @SuppressWarnings("rawtypes")
@@ -186,7 +214,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         if (!url.endsWith("v-1/")) {
             url += "v-1/";
         }
-        url += "reports/lookup/npm";
+        url += endpoint;
 
         try {
             r = Unirest.post(url)

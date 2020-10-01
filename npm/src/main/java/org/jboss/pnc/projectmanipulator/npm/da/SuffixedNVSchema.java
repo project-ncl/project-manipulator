@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import java.util.Map;
 
-public class NVSchema {
+public class SuffixedNVSchema {
 
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String versionSuffix;
@@ -32,10 +32,10 @@ public class NVSchema {
 
     public List<Map<String, Object>> packages;
 
-    public NVSchema() {
+    public SuffixedNVSchema() {
     }
 
-    public NVSchema(String repositoryGroup, String versionSuffix, List<Map<String, Object>> packages) {
+    public SuffixedNVSchema(String repositoryGroup, String versionSuffix, List<Map<String, Object>> packages) {
         this.repositoryGroup = repositoryGroup;
         this.versionSuffix = versionSuffix;
         this.packages = packages;

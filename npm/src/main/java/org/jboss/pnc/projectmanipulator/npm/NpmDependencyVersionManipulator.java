@@ -143,12 +143,15 @@ public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
                                     session.getResult().getDependenciesMap().put(dependency, overrideVersion);
                                     changed.add(npmPackage);
                                 }
-                            } catch (ManipulationException e) {
-                                logger.error(
-                                        "Could not change version of dependency `{}` from `{}` to `{}`",
-                                        dependency,
-                                        currentVersion,
-                                        overrideVersion);
+                            } catch (ManipulationException ex) {
+                                if (logger.isErrorEnabled()) {
+                                    String message = String.format(
+                                            "Could not change version of dependency '%s' from '%s' to '%s'",
+                                            dependency,
+                                            currentVersion,
+                                            overrideVersion);
+                                    logger.error(message, ex);
+                                }
                             }
                         }
                     });
@@ -177,12 +180,15 @@ public class NpmDependencyVersionManipulator implements Manipulator<NpmResult> {
                                             .put(devDependency, devDependenciesMap.get(devDependency));
                                     changed.add(npmPackage);
                                 }
-                            } catch (ManipulationException e) {
-                                logger.error(
-                                        "Could not change version of devDependency `{}` from `{}` to `{}`",
-                                        devDependency,
-                                        currentVersion,
-                                        overrideVersion);
+                            } catch (ManipulationException ex) {
+                                if (logger.isErrorEnabled()) {
+                                    String message = String.format(
+                                            "Could not change version of devDependency '%s' from '%s' to '%s'",
+                                            devDependency,
+                                            currentVersion,
+                                            overrideVersion);
+                                    logger.error(message, ex);
+                                }
                             }
                         }
                     });

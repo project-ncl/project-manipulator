@@ -79,7 +79,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     private static final String SEMVER_FINAL_PATTERN = "^(\\d+)\\.(\\d+)\\.(\\d+)$";
 
     /**
-     * Version pattern matching the semantic versioning format for apre-release version.
+     * Version pattern matching the semantic versioning format for a pre-release version.
      *
      * <p>
      * Groups are:
@@ -87,11 +87,10 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
      * <li>1 - major version</li>
      * <li>2 - minor version</li>
      * <li>3 - patch version</li>
-     * <li>4 - optional pre-release identifier</li>
-     * <li>5 - optional pre-release build number</li>
+     * <li>4... - optional pre-release identifiers</li>
      * </ul>
      */
-    private static final String SEMVER_PRERELEASE_PATTERN = "^(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\w+)\\.(\\d+))?$";
+    private static final String SEMVER_PRERELEASE_PATTERN = "^(\\d+)\\.(\\d+)\\.(\\d+)(?:-([\\w-]+)(?:\\.([\\w-]+))*)?$";
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

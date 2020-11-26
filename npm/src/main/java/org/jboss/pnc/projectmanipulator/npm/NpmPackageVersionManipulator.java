@@ -98,8 +98,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
     private Integer versionIncrementalSuffixPadding;
 
-    private String repositoryGroup;
-
     private String restUrl;
 
     private String versionSuffixOverride;
@@ -160,7 +158,6 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             versionOverride = userProps.getProperty("versionOverride");
             versionSuffixOverride = userProps.getProperty("versionSuffixOverride");
             restUrl = userProps.getProperty("restURL");
-            repositoryGroup = userProps.getProperty("repositoryGroup");
             versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
             try {
                 versionIncrementalSuffixPadding = createInteger(
@@ -176,8 +173,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             }
 
             return !isEmpty(versionOverride) || !isEmpty(versionSuffixOverride)
-                    || !isEmpty(restUrl) && !isEmpty(repositoryGroup)
-                            && (versioningStrategy == SEMVER || !isEmpty(versionIncrementalSuffix));
+                    || !isEmpty(restUrl) && (versioningStrategy == SEMVER || !isEmpty(versionIncrementalSuffix));
         }
 
         return false;
@@ -336,8 +332,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
     public Collection<Class<? extends Manipulator<NpmResult>>> getManipulatorDependencies() {
         if (manipulatorDependencies == null) {
             manipulatorDependencies = new ArrayList<>();
-            if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl)
-                    && !isEmpty(repositoryGroup)) {
+            if (isEmpty(versionOverride) && isEmpty(versionSuffixOverride) && !isEmpty(restUrl)) {
                 manipulatorDependencies.add(DAVersionsCollector.class);
             }
         }

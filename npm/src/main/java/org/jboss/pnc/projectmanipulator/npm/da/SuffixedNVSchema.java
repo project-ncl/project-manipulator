@@ -27,23 +27,38 @@ public class SuffixedNVSchema {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String versionSuffix;
 
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    /**
+     * @deprecated this was used to pass in the Indy repository group, which is not used in DA any more, instead you
+     *             have to fill in the temporaryBuild flag
+     */
+    @Deprecated
     public String repositoryGroup;
+
+    /**
+     * The flag marking the request to include packages built by temporary builds.
+     */
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    public boolean temporaryBuild;
 
     public List<Map<String, Object>> packages;
 
     public SuffixedNVSchema() {
     }
 
-    public SuffixedNVSchema(String repositoryGroup, String versionSuffix, List<Map<String, Object>> packages) {
+    public SuffixedNVSchema(
+            String repositoryGroup,
+            String versionSuffix,
+            boolean temporaryBuild,
+            List<Map<String, Object>> packages) {
         this.repositoryGroup = repositoryGroup;
         this.versionSuffix = versionSuffix;
+        this.temporaryBuild = temporaryBuild;
         this.packages = packages;
     }
 
     @Override
     public String toString() {
-        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: packages "
-                + packages;
+        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: temporaryBuild '"
+                + temporaryBuild + "' :: packages " + packages;
     }
 }

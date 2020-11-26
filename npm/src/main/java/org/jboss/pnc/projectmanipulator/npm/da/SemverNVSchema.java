@@ -27,23 +27,38 @@ public class SemverNVSchema {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String versionFilter;
 
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    /**
+     * @deprecated this was used to pass in the Indy repository group, which is not used in DA any more, instead you
+     *             have to fill in the temporaryBuild flag
+     */
+    @Deprecated
     public String repositoryGroup;
+
+    /**
+     * The flag marking the request to include packages built by temporary builds.
+     */
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    public boolean temporaryBuild;
 
     public List<Map<String, Object>> packages;
 
     public SemverNVSchema() {
     }
 
-    public SemverNVSchema(String repositoryGroup, String versionFilter, List<Map<String, Object>> packages) {
+    public SemverNVSchema(
+            String repositoryGroup,
+            String versionFilter,
+            boolean temporaryBuild,
+            List<Map<String, Object>> packages) {
         this.repositoryGroup = repositoryGroup;
         this.versionFilter = versionFilter;
+        this.temporaryBuild = temporaryBuild;
         this.packages = packages;
     }
 
     @Override
     public String toString() {
-        return "RepositoryGroup '" + repositoryGroup + "' :: versionFilter '" + versionFilter + "' :: packages "
-                + packages;
+        return "RepositoryGroup '" + repositoryGroup + "' :: versionFilter '" + versionFilter + "' :: temporaryBuild '"
+                + temporaryBuild + "' :: packages " + packages;
     }
 }

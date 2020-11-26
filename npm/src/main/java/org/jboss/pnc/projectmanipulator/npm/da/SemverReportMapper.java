@@ -36,12 +36,16 @@ public class SemverReportMapper implements ReportObjectMapper {
 
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
+    @Deprecated
     private final String repositoryGroup;
+
+    private final boolean temporaryBuild;
 
     private String errorString;
 
-    public SemverReportMapper(String repositoryGroup) {
+    public SemverReportMapper(String repositoryGroup, boolean temporaryBuild) {
         this.repositoryGroup = repositoryGroup;
+        this.temporaryBuild = temporaryBuild;
     }
 
     @Override
@@ -114,7 +118,7 @@ public class SemverReportMapper implements ReportObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new SemverNVSchema(repositoryGroup, "MAJOR_MINOR", requestBody);
+        request = new SemverNVSchema(repositoryGroup, "MAJOR_MINOR", temporaryBuild, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);

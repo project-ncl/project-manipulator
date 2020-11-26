@@ -34,8 +34,9 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | restURL | Dependency Analysis REST URL (e.g http://da.url.com/da/rest/v-1). It is used and required when user wants to perform automatic version increment. |
 | restConnectionTimeout | Optional connection timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 30 seconds.|
 | restSocketTimeout | Optional socket timeout to set for the underlying HTTP client library responsible for calling the REST endpoints. Defaults to 10 minutes.|
-| repositoryGroup | A repository group used by Dependency Analysis to read existing versions with the same base version and suffix. It is used and required when user wants to perform automatic version increment. |
-| packageScope | A package scope that should be added. |
+| repositoryGroup | DEPRECATED. Not used anymore. Was a repository group used by Dependency Analysis to read existing versions with the same base version and suffix. It is used and required when user wants to perform automatic version increment. |
+| temporaryBuild | Flag indicating that it should read also temporary artifact versions from Dependency Analysis. |
+| packageScope | A package scope that should be added or changed to. |
 | versioningStrategy | Versioning strategy can be either HYPHENED or SEMVER. The former uses hyphens between the original version, requested suffix and auto-incremented number, e.g. "1.2.3-jboss-001". The latter auto-increments the patch number to first available number and does not request suffix. If defined, it will also append it and add a build number separated by a dot resulting in SemVer pre-release format, e.g. "1.2.0-rc.1". It is mandatory when requesting automatic version increment. |
 | versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. It is mandatory with HYPHENED versioning strategy and optional with SEMVER one. |
 | versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. This is used only with HYPHENED versioning strategy. |

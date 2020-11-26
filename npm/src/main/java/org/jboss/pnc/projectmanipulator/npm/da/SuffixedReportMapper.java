@@ -36,14 +36,18 @@ public class SuffixedReportMapper implements ReportObjectMapper {
 
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
+    @Deprecated
     private final String repositoryGroup;
+
+    private final boolean temporaryBuild;
 
     private final String versionSuffix;
 
     private String errorString;
 
-    public SuffixedReportMapper(String repositoryGroup, String incrementalSerialSuffix) {
+    public SuffixedReportMapper(String repositoryGroup, boolean temporaryBuild, String incrementalSerialSuffix) {
         this.repositoryGroup = repositoryGroup;
+        this.temporaryBuild = temporaryBuild;
         this.versionSuffix = incrementalSerialSuffix;
     }
 
@@ -117,7 +121,7 @@ public class SuffixedReportMapper implements ReportObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new SuffixedNVSchema(repositoryGroup, versionSuffix, requestBody);
+        request = new SuffixedNVSchema(repositoryGroup, versionSuffix, temporaryBuild, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);

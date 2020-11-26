@@ -24,6 +24,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.lang.BooleanUtils;
 import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
 import org.jboss.pnc.projectmanipulator.core.ManipulationException;
 import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
@@ -84,7 +85,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String restURL;
 
+    @Deprecated
     private String repositoryGroup;
+
+    private boolean temporaryBuild;
 
     private String versionIncrementalSuffix;
 
@@ -112,13 +116,13 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
             if (isEmpty(versionSuffixOverride)) {
                 restURL = userProps.getProperty("restURL");
                 if (!isEmpty(restURL)) {
+                    temporaryBuild = BooleanUtils.toBoolean(userProps.getProperty("temporaryBuild"));
                     repositoryGroup = userProps.getProperty("repositoryGroup");
-                    if (!isEmpty(repositoryGroup)) {
-                        versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
-                        versioningStrategy = userProps.getProperty("versioningStrategy");
-                        if (!isEmpty(versionIncrementalSuffix) || SEMVER.name().equals(versioningStrategy)) {
-                            return true;
-                        }
+
+                    versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
+                    versioningStrategy = userProps.getProperty("versioningStrategy");
+                    if (!isEmpty(versionIncrementalSuffix) || SEMVER.name().equals(versioningStrategy)) {
+                        return true;
                     }
                 }
             }
@@ -187,13 +191,16 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     private Map<NpmPackageRef, List<String>> getAvailableSemverVersions(ArrayList<NpmPackageRef> restParam) {
-        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup);
+        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup, temporaryBuild);
         String endpoint = "reports/versions/npm";
         return getAvailableVersions(restParam, mapper, endpoint);
     }
 
     private Map<NpmPackageRef, List<String>> getAvailableSuffixedVersions(ArrayList<NpmPackageRef> restParam) {
-        SuffixedReportMapper mapper = new SuffixedReportMapper(repositoryGroup, versionIncrementalSuffix);
+        SuffixedReportMapper mapper = new SuffixedReportMapper(
+                repositoryGroup,
+                temporaryBuild,
+                versionIncrementalSuffix);
         String endpoint = "reports/lookup/npm";
         return getAvailableVersions(restParam, mapper, endpoint);
     }
@@ -277,8 +284,6 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
             }
         }
         logger.debug("Added the following NpmProjectRef:Version from REST call into {} {}", AVAILABLE_VERSIONS, state);
-
-        // TODO sort out blacklisted artifacts (for dependencies)
     }
 
     /**

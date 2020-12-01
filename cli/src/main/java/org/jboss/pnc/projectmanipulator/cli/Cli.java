@@ -22,6 +22,14 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
+import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -37,11 +45,6 @@ import org.jboss.pnc.projectmanipulator.npm.NpmManipulationSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import java.io.File;
-import java.util.Properties;
-
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 public class Cli {
 
@@ -138,24 +141,28 @@ public class Cli {
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) rootLogger;
 
         if (cmd.hasOption('l')) {
-            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-            loggerContext.reset();
+            if (runningInContainer()) {
+                logger.warn("Disabling log file as running in container!");
+            } else {
+                LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+                loggerContext.reset();
 
-            PatternLayoutEncoder ple = new PatternLayoutEncoder();
-            ple.setPattern("%mdc{LOG-CONTEXT}%level %logger{36} %msg%n");
-            ple.setContext(loggerContext);
-            ple.start();
+                PatternLayoutEncoder ple = new PatternLayoutEncoder();
+                ple.setPattern("%mdc{LOG-CONTEXT}%level %logger{36} %msg%n");
+                ple.setContext(loggerContext);
+                ple.start();
 
-            FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-            fileAppender.setEncoder(ple);
-            fileAppender.setContext(loggerContext);
-            fileAppender.setName("fileLogging");
-            fileAppender.setAppend(false);
-            fileAppender.setFile(cmd.getOptionValue("l"));
-            fileAppender.start();
+                FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+                fileAppender.setEncoder(ple);
+                fileAppender.setContext(loggerContext);
+                fileAppender.setName("fileLogging");
+                fileAppender.setAppend(false);
+                fileAppender.setFile(cmd.getOptionValue("l"));
+                fileAppender.start();
 
-            root.addAppender(fileAppender);
-            root.setLevel(Level.INFO);
+                root.addAppender(fileAppender);
+                root.setLevel(Level.INFO);
+            }
         }
         // Set debug logging after session creation
         if (cmd.hasOption('d')) {
@@ -187,5 +194,25 @@ public class Cli {
     private void createSession(File projectFile, File resultFile) {
         session = NpmManipulationSessionFactory
                 .createSession(projectFile, resultFile, System.getProperties(), userProps);
+    }
+
+    /**
+     * Determine whether the process is running inside an image. See
+     * <a href="https://hackmd.io/gTlORH1KTuOuoWoAAzD42g">here</a>
+     *
+     * @return true if running in a container
+     */
+    private boolean runningInContainer() {
+        boolean result = false;
+
+        try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
+            result = stream.anyMatch(line -> line.contains("docker") || line.contains("kubepods"));
+        } catch (IOException e) {
+            logger.error("Unable to determine if running in a container", e);
+        }
+        if (!result) {
+            result = System.getenv().containsKey("container");
+        }
+        return result;
     }
 }

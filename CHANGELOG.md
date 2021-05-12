@@ -30,3 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 - Section
 
+
+## [1.1.0] - unreleased
+### Added
+- [NCL-6169] Update DA calls to the changed REST API

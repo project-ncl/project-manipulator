@@ -39,15 +39,15 @@ public class SuffixedReportMapper implements ReportObjectMapper {
     @Deprecated
     private final String repositoryGroup;
 
-    private final boolean temporaryBuild;
+    private final String mode;
 
     private final String versionSuffix;
 
     private String errorString;
 
-    public SuffixedReportMapper(String repositoryGroup, boolean temporaryBuild, String incrementalSerialSuffix) {
+    public SuffixedReportMapper(String repositoryGroup, String mode, String incrementalSerialSuffix) {
         this.repositoryGroup = repositoryGroup;
-        this.temporaryBuild = temporaryBuild;
+        this.mode = mode;
         this.versionSuffix = incrementalSerialSuffix;
     }
 
@@ -121,7 +121,7 @@ public class SuffixedReportMapper implements ReportObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new SuffixedNVSchema(repositoryGroup, versionSuffix, temporaryBuild, requestBody);
+        request = new SuffixedNVSchema(repositoryGroup, versionSuffix, mode, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);

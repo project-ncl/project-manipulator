@@ -17,11 +17,9 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
@@ -31,9 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test class for {@link NpmDependencyVersionManipulatorTest}.
@@ -55,7 +55,7 @@ public class NpmDependencyVersionManipulatorTest {
         assertTrue(packageJson.exists());
         assertTrue(packageJson.isFile());
 
-        Map<String, String> userDependenciesMap = new LinkedHashMap<String, String>();
+        Map<String, String> userDependenciesMap = new LinkedHashMap<>();
         userDependenciesMap.put("archiver", "1.2.0");
         userDependenciesMap.put("async", "1.5.2");
         userDependenciesMap.put("body-parser", "1.18.2");
@@ -64,7 +64,7 @@ public class NpmDependencyVersionManipulatorTest {
         userDependenciesMap.put("express-bunyan-logger", "1.3.3");
         userDependenciesMap.put("keycloak-admin-client", "^0.12.0");
 
-        Map<String, String> userDevDependenciesMap = new LinkedHashMap<String, String>();
+        Map<String, String> userDevDependenciesMap = new LinkedHashMap<>();
         userDevDependenciesMap.put("deep-equal", "~1.0.1");
         userDevDependenciesMap.put("express", "4.16.5");
         userDevDependenciesMap.put("grunt", "~1.0.1");

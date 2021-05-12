@@ -24,12 +24,12 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.lang.BooleanUtils;
 import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
 import org.jboss.pnc.projectmanipulator.core.ManipulationException;
 import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
 import org.jboss.pnc.projectmanipulator.core.Manipulator;
 import org.jboss.pnc.projectmanipulator.core.Project;
+import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
 import org.jboss.pnc.projectmanipulator.npm.da.DAException;
 import org.jboss.pnc.projectmanipulator.npm.da.ReportObjectMapper;
 import org.jboss.pnc.projectmanipulator.npm.da.SemverReportMapper;
@@ -49,7 +49,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
@@ -88,7 +87,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     @Deprecated
     private String repositoryGroup;
 
-    private boolean temporaryBuild;
+    private String mode;
 
     private String versionIncrementalSuffix;
 
@@ -116,7 +115,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
             if (isEmpty(versionSuffixOverride)) {
                 restURL = userProps.getProperty("restURL");
                 if (!isEmpty(restURL)) {
-                    temporaryBuild = BooleanUtils.toBoolean(userProps.getProperty("temporaryBuild"));
+                    mode = userProps.getProperty("restMode");
                     repositoryGroup = userProps.getProperty("repositoryGroup");
 
                     versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
@@ -191,7 +190,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     private Map<NpmPackageRef, List<String>> getAvailableSemverVersions(ArrayList<NpmPackageRef> restParam) {
-        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup, temporaryBuild);
+        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup, mode);
         String endpoint = "reports/versions/npm";
         return getAvailableVersions(restParam, mapper, endpoint);
     }
@@ -199,7 +198,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     private Map<NpmPackageRef, List<String>> getAvailableSuffixedVersions(ArrayList<NpmPackageRef> restParam) {
         SuffixedReportMapper mapper = new SuffixedReportMapper(
                 repositoryGroup,
-                temporaryBuild,
+                mode,
                 versionIncrementalSuffix);
         String endpoint = "reports/lookup/npm";
         return getAvailableVersions(restParam, mapper, endpoint);

@@ -29,16 +29,16 @@ public class SuffixedNVSchema {
 
     /**
      * @deprecated this was used to pass in the Indy repository group, which is not used in DA any more, instead you
-     *             have to fill in the temporaryBuild flag
+     *             have to fill in the mode
      */
     @Deprecated
     public String repositoryGroup;
 
     /**
-     * The flag marking the request to include packages built by temporary builds.
+     * The mode telling DA which packages to select.
      */
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public boolean temporaryBuild;
+    public String mode;
 
     public List<Map<String, Object>> packages;
 
@@ -48,17 +48,17 @@ public class SuffixedNVSchema {
     public SuffixedNVSchema(
             String repositoryGroup,
             String versionSuffix,
-            boolean temporaryBuild,
+            String mode,
             List<Map<String, Object>> packages) {
         this.repositoryGroup = repositoryGroup;
         this.versionSuffix = versionSuffix;
-        this.temporaryBuild = temporaryBuild;
+        this.mode = mode;
         this.packages = packages;
     }
 
     @Override
     public String toString() {
-        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: temporaryBuild '"
-                + temporaryBuild + "' :: packages " + packages;
+        return "RepositoryGroup '" + repositoryGroup + "' :: versionSuffix '" + versionSuffix + "' :: mode '" + mode
+                + "' :: packages " + packages;
     }
 }

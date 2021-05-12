@@ -39,13 +39,13 @@ public class SemverReportMapper implements ReportObjectMapper {
     @Deprecated
     private final String repositoryGroup;
 
-    private final boolean temporaryBuild;
+    private final String mode;
 
     private String errorString;
 
-    public SemverReportMapper(String repositoryGroup, boolean temporaryBuild) {
+    public SemverReportMapper(String repositoryGroup, String mode) {
         this.repositoryGroup = repositoryGroup;
-        this.temporaryBuild = temporaryBuild;
+        this.mode = mode;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class SemverReportMapper implements ReportObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new SemverNVSchema(repositoryGroup, "MAJOR_MINOR", temporaryBuild, requestBody);
+        request = new SemverNVSchema(repositoryGroup, "MAJOR_MINOR", mode, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);

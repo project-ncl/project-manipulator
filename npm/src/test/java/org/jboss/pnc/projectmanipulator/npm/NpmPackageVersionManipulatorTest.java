@@ -20,8 +20,9 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,9 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test class for {@link NpmPackageVersionManipulator}.
@@ -294,7 +294,7 @@ public class NpmPackageVersionManipulatorTest {
     /**
      * Tests getting new version when the complete version is set to an override. It sets also versionSuffix and
      * versionSuffixOverride, which should be both ignored and the result should be only the overriden version.
-     * 
+     *
      * @throws ManipulationException in case of an error
      */
     @Test

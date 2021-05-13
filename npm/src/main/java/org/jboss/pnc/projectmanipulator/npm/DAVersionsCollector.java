@@ -196,10 +196,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
     }
 
     private Map<NpmPackageRef, List<String>> getAvailableSuffixedVersions(ArrayList<NpmPackageRef> restParam) {
-        SuffixedReportMapper mapper = new SuffixedReportMapper(
-                repositoryGroup,
-                mode,
-                versionIncrementalSuffix);
+        SuffixedReportMapper mapper = new SuffixedReportMapper(repositoryGroup, mode, versionIncrementalSuffix);
         String endpoint = "reports/lookup/npm";
         return getAvailableVersions(restParam, mapper, endpoint);
     }

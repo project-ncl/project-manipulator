@@ -30,21 +30,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SemverReportMapper implements ReportObjectMapper {
+public class ReportMapper implements ReportObjectMapper {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
-    @Deprecated
-    private final String repositoryGroup;
+    private final boolean includeAll;
 
     private final String mode;
 
     private String errorString;
 
-    public SemverReportMapper(String repositoryGroup, String mode) {
-        this.repositoryGroup = repositoryGroup;
+    public ReportMapper(boolean includeAll, String mode) {
+        this.includeAll = includeAll;
         this.mode = mode;
     }
 
@@ -118,7 +117,7 @@ public class SemverReportMapper implements ReportObjectMapper {
             requestBody.add(gav);
         }
 
-        request = new SemverNVSchema(repositoryGroup, "MAJOR_MINOR", mode, requestBody);
+        request = new NVSchema("MAJOR_MINOR", mode, includeAll, requestBody);
 
         try {
             return objectMapper.writeValueAsString(request);

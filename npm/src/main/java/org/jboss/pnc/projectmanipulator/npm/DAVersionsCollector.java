@@ -32,8 +32,7 @@ import org.jboss.pnc.projectmanipulator.core.Project;
 import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
 import org.jboss.pnc.projectmanipulator.npm.da.DAException;
 import org.jboss.pnc.projectmanipulator.npm.da.ReportObjectMapper;
-import org.jboss.pnc.projectmanipulator.npm.da.SemverReportMapper;
-import org.jboss.pnc.projectmanipulator.npm.da.SuffixedReportMapper;
+import org.jboss.pnc.projectmanipulator.npm.da.ReportMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -84,9 +83,6 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String restURL;
 
-    @Deprecated
-    private String repositoryGroup;
-
     private String mode;
 
     private String versionIncrementalSuffix;
@@ -116,7 +112,6 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                 restURL = userProps.getProperty("restURL");
                 if (!isEmpty(restURL)) {
                     mode = userProps.getProperty("restMode");
-                    repositoryGroup = userProps.getProperty("repositoryGroup");
 
                     versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
                     versioningStrategy = userProps.getProperty("versioningStrategy");
@@ -160,10 +155,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         try {
             switch (VersioningStrategy.valueOf(versioningStrategy)) {
                 case SEMVER:
-                    restResult = getAvailableSemverVersions(restParam);
-                    break;
                 case HYPHENED:
-                    restResult = getAvailableSuffixedVersions(restParam);
+                    restResult = getExistingVersions(restParam);
                     break;
                 default:
                     throw new IllegalStateException(
@@ -189,15 +182,9 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         Unirest.setObjectMapper(objectMapper);
     }
 
-    private Map<NpmPackageRef, List<String>> getAvailableSemverVersions(ArrayList<NpmPackageRef> restParam) {
-        SemverReportMapper mapper = new SemverReportMapper(repositoryGroup, mode);
+    private Map<NpmPackageRef, List<String>> getExistingVersions(ArrayList<NpmPackageRef> restParam) {
+        ReportMapper mapper = new ReportMapper(true, mode);
         String endpoint = "reports/versions/npm";
-        return getAvailableVersions(restParam, mapper, endpoint);
-    }
-
-    private Map<NpmPackageRef, List<String>> getAvailableSuffixedVersions(ArrayList<NpmPackageRef> restParam) {
-        SuffixedReportMapper mapper = new SuffixedReportMapper(repositoryGroup, mode, versionIncrementalSuffix);
-        String endpoint = "reports/lookup/npm";
         return getAvailableVersions(restParam, mapper, endpoint);
     }
 

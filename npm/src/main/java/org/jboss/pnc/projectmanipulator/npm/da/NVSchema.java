@@ -22,17 +22,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import java.util.Map;
 
-public class SemverNVSchema {
+public class NVSchema {
 
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public String versionFilter;
-
-    /**
-     * @deprecated this was used to pass in the Indy repository group, which is not used in DA any more, instead you
-     *             have to fill in the mode
-     */
-    @Deprecated
-    public String repositoryGroup;
 
     /**
      * The mode telling DA which packages to select.
@@ -42,15 +35,17 @@ public class SemverNVSchema {
 
     public List<Map<String, Object>> packages;
 
-    public SemverNVSchema() {
+    /**
+     * Flag telling DA to not filter the results by quality levels. This is useful to get all versions when incrementing
+     * the built package version.
+     */
+    public boolean includeAll;
+
+    public NVSchema() {
     }
 
-    public SemverNVSchema(
-            String repositoryGroup,
-            String versionFilter,
-            String mode,
-            List<Map<String, Object>> packages) {
-        this.repositoryGroup = repositoryGroup;
+    public NVSchema(String versionFilter, String mode, boolean includeAll, List<Map<String, Object>> packages) {
+        this.includeAll = includeAll;
         this.versionFilter = versionFilter;
         this.mode = mode;
         this.packages = packages;
@@ -58,7 +53,7 @@ public class SemverNVSchema {
 
     @Override
     public String toString() {
-        return "RepositoryGroup '" + repositoryGroup + "' :: versionFilter '" + versionFilter + "' :: mode '" + mode
-                + "' :: packages " + packages;
+        return "NVSchema(includeAll '" + includeAll + "' :: versionFilter '" + versionFilter + "' :: mode '" + mode
+                + "' :: packages " + packages + ")";
     }
 }

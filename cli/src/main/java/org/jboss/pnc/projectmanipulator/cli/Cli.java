@@ -27,6 +27,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -203,16 +204,21 @@ public class Cli {
      * @return true if running in a container
      */
     private boolean runningInContainer() {
+        final Path cgroup = Paths.get("/proc/1/cgroup");
         boolean result = false;
 
-        try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
-            result = stream.anyMatch(line -> line.contains("docker") || line.contains("kubepods"));
-        } catch (IOException e) {
-            logger.error("Unable to determine if running in a container", e);
+        if (Files.isReadable(cgroup)) {
+            try (Stream<String> stream = Files.lines(cgroup)) {
+                result = stream.anyMatch(line -> line.contains("docker") || line.contains("kubepods"));
+            } catch (IOException e) {
+                logger.error("Unable to determine if running in a container", e);
+            }
         }
+
         if (!result) {
             result = System.getenv().containsKey("container");
         }
+
         return result;
     }
 }

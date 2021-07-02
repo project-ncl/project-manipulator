@@ -18,7 +18,8 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -63,10 +64,10 @@
   </scm>
 
   <distributionManagement>
-      <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      </snapshotRepository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <properties>
@@ -276,7 +277,7 @@
             </properties>
             <header>${session.executionRootDirectory}/.license-header.txt</header>
             <excludes>
-                <exclude>**/eclipse-codeStyle.xml</exclude>
+              <exclude>**/eclipse-codeStyle.xml</exclude>
             </excludes>
           </configuration>
         </plugin>
@@ -323,20 +324,21 @@
         </executions>
       </plugin>
       <plugin>
-          <groupId>net.revelc.code.formatter</groupId>
-          <artifactId>formatter-maven-plugin</artifactId>
-          <version>2.11.0</version>
-          <configuration>
-              <configFile>../eclipse-codeStyle.xml</configFile>
-          </configuration>
-          <executions>
-              <execution>
-                  <id>java-format</id>
-                  <goals>
-                      <goal>format</goal>
-                  </goals>
-              </execution>
-          </executions>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <version>2.16.0</version>
+        <configuration>
+          <configFile>../eclipse-codeStyle.xml</configFile>
+          <lineEnding>KEEP</lineEnding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>java-format</id>
+            <goals>
+              <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

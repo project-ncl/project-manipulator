@@ -47,58 +47,63 @@ public class ReportMapper implements ReportObjectMapper {
         this.mode = mode;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Map<NpmPackageRef, List<String>> readValue(String s) {
-        Map<NpmPackageRef, List<String>> result = new HashMap<>();
+    public <T> T readValue(String s, Class<T> valueType) {
+        if (valueType == Map.class) {
+            Map<NpmPackageRef, List<String>> result = new HashMap<>();
 
-        // Workaround for https://github.com/Mashape/unirest-java/issues/122
-        // Rather than throwing an exception we return an empty body which allows
-        // DefaultTranslator to examine the status codes.
+            // Workaround for https://github.com/Mashape/unirest-java/issues/122
+            // Rather than throwing an exception we return an empty body which allows
+            // DefaultTranslator to examine the status codes.
 
-        if (s.length() == 0) {
-            errorString = "No content to read.";
-            return result;
-        } else if (s.startsWith("<")) {
-            // Read an HTML string.
-            String stripped = s.replaceAll("<.*?>", "").replaceAll("\n", " ").trim();
-            logger.debug("Read HTML string '{}' rather than a JSON stream; stripping message to '{}'", s, stripped);
-            errorString = stripped;
-            return result;
-        }
-
-        try {
-            if (s.startsWith("{\"")) {
-                errorString = objectMapper.readValue(s, ErrorMessage.class).toString();
-
-                logger.debug("Read message string {}, processed to {} ", s, errorString);
-
-                return result;
+            if (s.length() == 0) {
+                errorString = "No content to read.";
+                return (T) result;
+            } else if (s.startsWith("<")) {
+                // Read an HTML string.
+                String stripped = s.replaceAll("<.*?>", "").replaceAll("\n", " ").trim();
+                logger.debug("Read HTML string '{}' rather than a JSON stream; stripping message to '{}'", s, stripped);
+                errorString = stripped;
+                return (T) result;
             }
 
-            @SuppressWarnings("unchecked")
-            List<Map<String, Object>> responseBody = objectMapper.readValue(s, List.class);
+            try {
+                if (s.startsWith("{\"")) {
+                    errorString = objectMapper.readValue(s, ErrorMessage.class).toString();
 
-            for (Map<String, Object> npmPackage : responseBody) {
-                String name = (String) npmPackage.get("name");
-                String version = (String) npmPackage.get("version");
-                Version semverVersion = Version.valueOf(version);
-                // String bestMatchVersion = (String) npmPackage.get("bestMatchVersion");
-                @SuppressWarnings("unchecked")
-                List<String> availableVersions = (List<String>) npmPackage.get("availableVersions");
+                    logger.debug("Read message string {}, processed to {} ", s, errorString);
 
-                if (availableVersions != null) {
-                    NpmPackageRef project = new NpmPackageRef(name, semverVersion);
-                    result.put(project, availableVersions);
+                    return (T) result;
                 }
-            }
-        } catch (IOException e) {
-            logger.error("Failed to decode map when reading string {}", s);
-            throw new RuntimeException(
-                    "Failed to read list-of-maps response from version server: " + e.getMessage(),
-                    e);
-        }
 
-        return result;
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> responseBody = objectMapper.readValue(s, List.class);
+
+                for (Map<String, Object> npmPackage : responseBody) {
+                    String name = (String) npmPackage.get("name");
+                    String version = (String) npmPackage.get("version");
+                    Version semverVersion = Version.valueOf(version);
+                    // String bestMatchVersion = (String) npmPackage.get("bestMatchVersion");
+                    @SuppressWarnings("unchecked")
+                    List<String> availableVersions = (List<String>) npmPackage.get("availableVersions");
+
+                    if (availableVersions != null) {
+                        NpmPackageRef project = new NpmPackageRef(name, semverVersion);
+                        result.put(project, availableVersions);
+                    }
+                }
+            } catch (IOException e) {
+                logger.error("Failed to decode map when reading string {}", s);
+                throw new RuntimeException(
+                        "Failed to read list-of-maps response from version server: " + e.getMessage(),
+                        e);
+            }
+
+            return (T) result;
+        } else {
+            throw new RuntimeException("Unsupported value type: " + valueType);
+        }
     }
 
     @Override

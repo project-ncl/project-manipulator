@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -51,22 +50,20 @@ public class ManipulationManager<R> {
             manipulationDisabled = StringUtils.isEmpty(manipDisableValue) || "true".equalsIgnoreCase(manipDisableValue);
         }
 
-        Set<Project> changed;
         if (manipulationDisabled) {
             logger.info("All manipulation disabled by property {}.", MANIPULATION_DISABLE_PROPERTY);
-            changed = Collections.emptySet();
         } else {
             // apply manipulators on project files list and get changed ones back
-            changed = applyManipulations(projects);
+            Set<Project> changed = applyManipulations(projects);
 
             // process the changes
-            processChanges(changed, session);
+            processChanges(changed);
         }
 
         session.writeResult();
     }
 
-    private void processChanges(Set<Project> changed, ManipulationSession<R> session) throws ManipulationException {
+    private void processChanges(Set<Project> changed) throws ManipulationException {
         for (Project project : changed) {
             project.update();
         }
@@ -103,7 +100,7 @@ public class ManipulationManager<R> {
         if (!todo.isEmpty()) {
             throw new ManipulationException(
                     "A dependency cycle has been found, so manipulation cannot be finished. "
-                            + "Remaining manipulators are: %s",
+                            + "Remaining manipulators are: {}",
                     todo);
         }
 

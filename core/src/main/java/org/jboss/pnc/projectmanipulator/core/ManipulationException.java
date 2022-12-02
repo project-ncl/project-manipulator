@@ -17,7 +17,7 @@
  */
 package org.jboss.pnc.projectmanipulator.core;
 
-import java.text.MessageFormat;
+import org.slf4j.helpers.MessageFormatter;
 
 public class ManipulationException extends Exception {
 
@@ -27,53 +27,20 @@ public class ManipulationException extends Exception {
 
     private String formattedMessage;
 
-    public ManipulationException(final String messageFormat, final Throwable cause, final Object... params) {
-        super(messageFormat, cause);
-        this.params = params;
+    public ManipulationException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 
     public ManipulationException(final String string, final Object... params) {
-        this(string, null, params);
+        super(string, MessageFormatter.getThrowableCandidate(params));
+        this.params = params;
     }
 
     @Override
     public synchronized String getMessage() {
         if (formattedMessage == null) {
-            final String format = super.getMessage();
-            if (params == null || params.length < 1) {
-                formattedMessage = format;
-            } else {
-                try {
-                    formattedMessage = String.format(format.replaceAll("\\{\\}", "%s"), params);
-                } catch (final Error | Exception e) {
-                }
-
-                if (formattedMessage == null || format == formattedMessage) {
-                    try {
-                        formattedMessage = MessageFormat.format(format, params);
-                    } catch (final Error | RuntimeException e) {
-                        formattedMessage = format;
-                        throw e;
-                    } catch (final Exception e) {
-                        formattedMessage = format;
-                    }
-                }
-            }
+            formattedMessage = MessageFormatter.arrayFormat(super.getMessage(), params).getMessage();
         }
-
         return formattedMessage;
     }
-
-    private Object writeReplace() {
-        final Object[] newParams = new Object[params.length];
-        int i = 0;
-        for (final Object object : params) {
-            newParams[i] = String.valueOf(object);
-            i++;
-        }
-
-        this.params = newParams;
-        return this;
-    }
-
 }

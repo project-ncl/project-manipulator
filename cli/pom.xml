@@ -70,6 +70,11 @@
     </dependency>
 
     <dependency>
+      <groupId>com.redhat.resilience.otel</groupId>
+      <artifactId>opentelemetry-ext-cli-java</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>

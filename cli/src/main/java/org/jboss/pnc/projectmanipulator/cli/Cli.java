@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
 
+import com.redhat.resilience.otel.OTelCLIHelper;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -179,6 +180,18 @@ public class Cli {
         }
 
         try {
+            String endpoint = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
+            String service = System.getenv("OTEL_SERVICE_NAME");
+            if (endpoint != null) {
+                if (service == null) {
+                    service = "npm-project-manipulator";
+                }
+                logger.info("Enabling OpenTelemetry collection on {} with service name {}", endpoint, service);
+                OTelCLIHelper.startOTel(
+                        service,
+                        "cli",
+                        OTelCLIHelper.defaultSpanProcessor(OTelCLIHelper.defaultSpanExporter(endpoint)));
+            }
             manipulationManager.init(session);
             manipulationManager.scanAndApply(session);
         } catch (ManipulationException ex) {
@@ -188,6 +201,8 @@ public class Cli {
         } catch (Exception ex) {
             logger.error("Project Manipulation failed.", ex);
             return 100;
+        } finally {
+            OTelCLIHelper.stopOTel();
         }
         return 0;
     }

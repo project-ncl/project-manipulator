@@ -23,6 +23,9 @@ import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import com.redhat.resilience.otel.OTelCLIHelper;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
 import org.apache.commons.codec.binary.Base32;
 import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
 import org.jboss.pnc.projectmanipulator.core.ManipulationException;
@@ -44,10 +47,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
@@ -93,6 +98,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private long socketTimeout = DEFAULT_SOCKET_TIMEOUT_SEC;
 
+    private final Map<String, String> otelHeaders = new HashMap<>();
+
     @Override
     public boolean init(final ManipulationSession<NpmResult> session) throws ManipulationException {
         this.session = session;
@@ -104,6 +111,33 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                 userProps.getProperty("restConnectionTimeout", String.valueOf(DEFAULT_CONNECTION_TIMEOUT_SEC)));
         this.socketTimeout = Long
                 .parseLong(userProps.getProperty("restSocketTimeout", String.valueOf(DEFAULT_SOCKET_TIMEOUT_SEC)));
+
+        if (OTelCLIHelper.otelEnabled()) {
+            SpanContext current = Span.current().getSpanContext();
+            if (current.isValid()) {
+                otelHeaders.put("trace-id", current.getTraceId());
+                otelHeaders.put("span-id", current.getSpanId());
+                otelHeaders.put(
+                        "tracestate",
+                        current.getTraceState()
+                                .asMap()
+                                .entrySet()
+                                .stream()
+                                .map(Objects::toString)
+                                .collect(Collectors.joining(",")));
+                // Code from pnc-common to avoid transitively including that and pnc-api in the classpath
+                otelHeaders.put(
+                        "traceparent",
+                        String.format(
+                                "%s-%s-%s-%s",
+                                "00",
+                                current.getTraceId(),
+                                current.getSpanId(),
+                                current.getTraceFlags().asHex()));
+            } else {
+                logger.warn("Invalid span context {}", current);
+            }
+        }
 
         String versionOverride = userProps.getProperty("versionOverride");
         if (isEmpty(versionOverride)) {
@@ -211,6 +245,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                     .header("Accept", "application/json")
                     .header("Content-Type", "application/json")
                     .header("Log-Context", getHeaderContext())
+                    .headers(otelHeaders)
                     .body(restParam)
                     .asObject(Map.class);
 

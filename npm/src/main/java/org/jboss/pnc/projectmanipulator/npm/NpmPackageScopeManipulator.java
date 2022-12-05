@@ -98,7 +98,7 @@ public class NpmPackageScopeManipulator implements Manipulator<NpmResult> {
                 }
             } else {
                 throw new ManipulationException(
-                        "Manipulation failed, because project type %s is not supported by NPM manipulation.",
+                        "Manipulation failed, because project type {} is not supported by NPM manipulation.",
                         project.getClass());
             }
         }

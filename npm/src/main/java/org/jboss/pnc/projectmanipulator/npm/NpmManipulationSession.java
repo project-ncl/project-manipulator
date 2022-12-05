@@ -128,7 +128,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
                         e);
             }
         } else {
-            logger.error("Given package path %s does not exist.", pkg);
+            logger.error("Given package path {} does not exist.", pkg);
         }
 
         return projects;

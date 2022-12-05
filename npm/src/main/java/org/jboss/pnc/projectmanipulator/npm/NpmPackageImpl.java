@@ -81,10 +81,10 @@ public class NpmPackageImpl implements NpmPackage {
                     packageContents = FileUtils.readFileToString(packageFile, "utf-8");
                     packageJson = mapper.readTree(packageContents);
                 } catch (IOException ex) {
-                    throw new ManipulationException("Error reading file %s", ex, packageFile);
+                    throw new ManipulationException("Error reading file {}", packageFile, ex);
                 }
             } else {
-                throw new ManipulationException("Package file %s does not exist", packageFile.toString());
+                throw new ManipulationException("Package file {} does not exist", packageFile.toString());
             }
         }
         return packageJson;
@@ -104,7 +104,7 @@ public class NpmPackageImpl implements NpmPackage {
                     packageLockContents = FileUtils.readFileToString(packageLockFile, "utf-8");
                     packageLockJson = mapper.readTree(packageLockContents);
                 } catch (IOException ex) {
-                    throw new ManipulationException("Error reading file %s", ex, packageLockFile);
+                    throw new ManipulationException("Error reading file {}", packageLockFile, ex);
                 }
             }
         }
@@ -123,7 +123,7 @@ public class NpmPackageImpl implements NpmPackage {
                 generator = factory.createGenerator(packageFile, JsonEncoding.UTF8);
                 writer.writeValue(generator, packageJson);
             } catch (IOException ex) {
-                throw new ManipulationException("Error writing the package file %s.", ex, packageFile);
+                throw new ManipulationException("Error writing the package file {}.", packageFile, ex);
             } finally {
                 if (generator != null && !generator.isClosed()) {
                     try {
@@ -141,7 +141,7 @@ public class NpmPackageImpl implements NpmPackage {
                 generator = factory.createGenerator(packageLockFile, JsonEncoding.UTF8);
                 writer.writeValue(generator, packageLockJson);
             } catch (IOException ex) {
-                throw new ManipulationException("Error writing the package lock file %s.", ex, packageFile);
+                throw new ManipulationException("Error writing the package lock file {}.", packageFile, ex);
             } finally {
                 if (generator != null && !generator.isClosed()) {
                     try {
@@ -159,7 +159,7 @@ public class NpmPackageImpl implements NpmPackage {
         getPackage();
         JsonNode jsonName = packageJson.get("name");
         if (jsonName == null) {
-            throw new ManipulationException("The loaded project file %s does not contain field 'name'.", packageFile);
+            throw new ManipulationException("The loaded project file {} does not contain field 'name'.", packageFile);
         }
         return jsonName.asText();
     }
@@ -170,7 +170,7 @@ public class NpmPackageImpl implements NpmPackage {
         JsonNode jsonVersion = packageJson.get("version");
         if (jsonVersion == null) {
             throw new ManipulationException(
-                    "The loaded project file %s does not contain field 'version'.",
+                    "The loaded project file {} does not contain field 'version'.",
                     packageFile);
         }
         return jsonVersion.asText();
@@ -198,7 +198,7 @@ public class NpmPackageImpl implements NpmPackage {
             ((ObjectNode) packageJson).replace("name", new TextNode(name));
         } else {
             throw new ManipulationException(
-                    "The loaded project file %s does not seem to have correct structure.",
+                    "The loaded project file {} does not seem to have correct structure.",
                     packageFile);
         }
         if (packageLockJson != null) {
@@ -206,7 +206,7 @@ public class NpmPackageImpl implements NpmPackage {
                 ((ObjectNode) packageLockJson).replace("name", new TextNode(name));
             } else {
                 throw new ManipulationException(
-                        "The loaded project file %s does not seem to have correct structure.",
+                        "The loaded project file {} does not seem to have correct structure.",
                         packageLockFile);
             }
         }
@@ -220,7 +220,7 @@ public class NpmPackageImpl implements NpmPackage {
             ((ObjectNode) packageJson).replace("version", new TextNode(version));
         } else {
             throw new ManipulationException(
-                    "The loaded project file %s does not seem to have correct structure.",
+                    "The loaded project file {} does not seem to have correct structure.",
                     packageFile);
         }
         if (packageLockJson != null) {
@@ -228,7 +228,7 @@ public class NpmPackageImpl implements NpmPackage {
                 ((ObjectNode) packageLockJson).replace("version", new TextNode(version));
             } else {
                 throw new ManipulationException(
-                        "The loaded project file %s does not seem to have correct structure.",
+                        "The loaded project file {} does not seem to have correct structure.",
                         packageLockFile);
             }
         }

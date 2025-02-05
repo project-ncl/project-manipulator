@@ -19,13 +19,13 @@
 	"dependencies": {
 		"archiver": "1.2",
 		"cors": "3.7.1",
-		"express": "4.16.3",
+		"express": "4.20.0",
 		"express-bunyan-logger": "1.2.3",
 		"keycloak-admin-client": "^0.0.1"
 	},
 	"devDependencies": {
 		"deep-equal": "~1.0.1",
-		"express": "4.16.3",
+		"express": "4.20.0",
 		"grunt": "~1.0.0",
 		"grunt-fh-build": "~2",
 		"istanbul": "0.4.5"

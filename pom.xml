@@ -70,13 +70,12 @@
   </distributionManagement>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.release>11</maven.compiler.release>
 
     <projectOwner>Red Hat, Inc.</projectOwner>
     <projectEmail>ncl-dev@redhat.com</projectEmail>
 
-    <version.atlas>1.1.2</version.atlas>
+    <version.atlas>1.1.5</version.atlas>
     <version.commons-cli>1.5.0</version.commons-cli>
     <version.commons-codec>1.15</version.commons-codec>
     <version.commons-lang>2.6</version.commons-lang>

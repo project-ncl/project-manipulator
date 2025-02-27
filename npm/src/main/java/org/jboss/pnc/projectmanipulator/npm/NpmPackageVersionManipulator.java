@@ -100,6 +100,8 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
 
     private String restUrl;
 
+    private String versionBaseOverride;
+
     private String versionSuffixOverride;
 
     private String versionOverride;
@@ -128,11 +130,13 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
             VersioningStrategy versioningStrategy,
             String versionIncrementalSuffix,
             Integer versionIncrementalSuffixPadding,
+            String versionBaseOverride,
             String versionSuffixOverride,
             String versionOverride) {
         this.versioningStrategy = versioningStrategy;
         this.versionIncrementalSuffix = versionIncrementalSuffix;
         this.versionIncrementalSuffixPadding = versionIncrementalSuffixPadding;
+        this.versionBaseOverride = versionBaseOverride;
         this.versionSuffixOverride = versionSuffixOverride;
         this.versionOverride = versionOverride;
         this.session = new NpmManipulationSession();
@@ -156,6 +160,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 }
             }
             versionOverride = userProps.getProperty("versionOverride");
+            versionBaseOverride = userProps.getProperty("versionBaseOverride");
             versionSuffixOverride = userProps.getProperty("versionSuffixOverride");
             restUrl = userProps.getProperty("restURL");
             versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
@@ -172,7 +177,7 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
                 versionIncrementalSuffixPadding = 1;
             }
 
-            return !isEmpty(versionOverride) || !isEmpty(versionSuffixOverride)
+            return !isEmpty(versionOverride) || !isEmpty(versionBaseOverride) || !isEmpty(versionSuffixOverride)
                     || !isEmpty(restUrl) && (versioningStrategy == SEMVER || !isEmpty(versionIncrementalSuffix));
         }
 
@@ -214,14 +219,20 @@ public class NpmPackageVersionManipulator implements Manipulator<NpmResult> {
         String newVersion = null;
         if (isEmpty(versionOverride)) {
             if (isEmpty(versionSuffixOverride)) {
+                String baseVersion;
+                if (isEmpty(versionBaseOverride)) {
+                    baseVersion = origVersion;
+                } else {
+                    baseVersion = versionBaseOverride;
+                }
                 if (versioningStrategy != null) {
                     switch (versioningStrategy) {
                         case HYPHENED:
-                            newVersion = generateNewHyphenedVersion(origVersion, availablePkgVersions);
+                            newVersion = generateNewHyphenedVersion(baseVersion, availablePkgVersions);
                             break;
 
                         case SEMVER:
-                            newVersion = generateNewSemverVersion(origVersion, availablePkgVersions);
+                            newVersion = generateNewSemverVersion(baseVersion, availablePkgVersions);
                             break;
 
                         default:

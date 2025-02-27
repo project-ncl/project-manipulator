@@ -40,6 +40,7 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | versionIncrementalSuffix | The version suffix to append to version of current project. It is used when automatic version increment is performed. It is mandatory with HYPHENED versioning strategy and optional with SEMVER one. |
 | versionIncrementalSuffixPadding | With automatic version increment, it is possible to configure zero-padding for the incremented number in the suffix. This is used only with HYPHENED versioning strategy. Default: 1 |
 | versionOverride | Desired version used as the output of version manipulation overriding all the logic. If set, the manipulation only updates project version to this and does not do anything else (no communication with Dependency Analysis, no suffix computation etc). |
+| versionBaseOverride | Replacement version to be used as the base in place of the original project version before running the logic computing the suffix. |
 | versionSuffixOverride | Desired version suffix, that will be appended to the current version. It overrides the logic computing the suffix number automatically. |
 | manipulation.disable | default: false, specify whether you want to disable the manipulation of the version or not |
 | dependencyOverride.$package_name | Desired version(s) to apply to the specified package(s), if listed inside the _dependencies_ in package.json. Does not replace the values in lock files. Example: `-DdependencyOverride.keycloak-admin-client=^0.12.0 -DdependencyOverride.async=1.5.2`|

@@ -52,6 +52,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -71,6 +72,7 @@ public class NpmPackageVersionManipulatorTest {
                 NpmPackageVersionManipulator.VersioningStrategy.HYPHENED,
                 "jboss",
                 5,
+                null,
                 null,
                 null);
 
@@ -94,6 +96,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -116,6 +119,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -135,6 +139,7 @@ public class NpmPackageVersionManipulatorTest {
                 NpmPackageVersionManipulator.VersioningStrategy.SEMVER,
                 "jboss",
                 5,
+                null,
                 null,
                 null);
 
@@ -158,6 +163,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -180,6 +186,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         String newVersion = manipulator.generateNewHyphenedVersion("1.0.0", Collections.emptySet());
@@ -197,6 +204,7 @@ public class NpmPackageVersionManipulatorTest {
                 NpmPackageVersionManipulator.VersioningStrategy.HYPHENED,
                 "jboss",
                 5,
+                null,
                 null,
                 null);
 
@@ -221,6 +229,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -242,6 +251,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         String newVersion = manipulator.generateNewSemverVersion("1.0.0", Collections.emptySet());
@@ -259,6 +269,7 @@ public class NpmPackageVersionManipulatorTest {
                 NpmPackageVersionManipulator.VersioningStrategy.SEMVER,
                 "jboss",
                 5,
+                null,
                 null,
                 null);
 
@@ -282,6 +293,7 @@ public class NpmPackageVersionManipulatorTest {
                 "jboss",
                 5,
                 null,
+                null,
                 null);
 
         Set<String> availableSet = new HashSet<>();
@@ -292,8 +304,9 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests getting new version when the complete version is set to an override. It sets also versionSuffix and
-     * versionSuffixOverride, which should be both ignored and the result should be only the overriden version.
+     * Tests getting new version when the complete version is set to an override. It sets also versionSuffix,
+     * versionBaseOverride and versionSuffixOverride, which should be all ignored and the result should be only the
+     * overriden version.
      *
      * @throws ManipulationException in case of an error
      */
@@ -304,6 +317,7 @@ public class NpmPackageVersionManipulatorTest {
                 null,
                 "jboss",
                 5,
+                "3.0.0",
                 "bar-02",
                 versionOverride);
 
@@ -315,8 +329,7 @@ public class NpmPackageVersionManipulatorTest {
     }
 
     /**
-     * Tests applying the version update with an override. It sets also versionSuffix and versionSuffixOverride, which
-     * should be both ignored and the result should be only the overriden version.
+     * Tests applying the version update with an override. The result should be only the overriden version.
      *
      * @throws ManipulationException in case of an error
      */
@@ -324,6 +337,7 @@ public class NpmPackageVersionManipulatorTest {
     public void applyChangesWithVersionOverride() throws ManipulationException {
         String versionOverride = "2.0.0-foo-001";
         NpmPackageVersionManipulator manipulator = new NpmPackageVersionManipulator(
+                null,
                 null,
                 null,
                 null,

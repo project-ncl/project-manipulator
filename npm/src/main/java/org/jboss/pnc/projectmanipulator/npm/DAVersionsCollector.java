@@ -90,6 +90,8 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private String mode;
 
+    private String versionBaseOverride;
+
     private String versionIncrementalSuffix;
 
     private String versioningStrategy;
@@ -147,6 +149,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
                 if (!isEmpty(restURL)) {
                     mode = userProps.getProperty("restMode");
 
+                    versionBaseOverride = userProps.getProperty("versionBaseOverride");
+                    if (isEmpty(versionBaseOverride)) {
+                        this.versionBaseOverride = null;
+                    }
                     versionIncrementalSuffix = userProps.getProperty("versionIncrementalSuffix");
                     versioningStrategy = userProps.getProperty("versioningStrategy");
                     if (!isEmpty(versionIncrementalSuffix) || SEMVER.name().equals(versioningStrategy)) {
@@ -175,7 +181,13 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         final ArrayList<NpmPackageRef> npmPackageRefs = new ArrayList<>();
 
         for (final NpmPackage npmPackage : npmPackages) {
-            npmPackageRefs.add(new NpmPackageRef(npmPackage.getName(), Version.valueOf(npmPackage.getVersion())));
+            String version;
+            if (versionBaseOverride == null) {
+                version = npmPackage.getVersion();
+            } else {
+                version = versionBaseOverride;
+            }
+            npmPackageRefs.add(new NpmPackageRef(npmPackage.getName(), Version.valueOf(version)));
         }
 
         final ArrayList<NpmPackageRef> restParam = new ArrayList<>(npmPackageRefs);

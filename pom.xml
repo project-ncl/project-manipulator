@@ -24,7 +24,7 @@
   <parent>
     <groupId>com.redhat.rcm</groupId>
     <artifactId>redhat-releng-tools</artifactId>
-    <version>11</version>
+    <version>12</version>
   </parent>
 
   <groupId>org.jboss.pnc.project-manipulator</groupId>
@@ -61,13 +61,6 @@
     <url>http://github.com/project-ncl/project-manipulator</url>
     <tag>HEAD</tag>
   </scm>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <properties>
     <maven.compiler.release>11</maven.compiler.release>
@@ -370,18 +363,16 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.8.0</version>
         <extensions>true</extensions>
         <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>false</autoReleaseAfterClose>
+          <!-- as defined in your settings.xml -->
+          <publishingServerId>central-publisher</publishingServerId>
         </configuration>
       </plugin>
     </plugins>
-
   </build>
 
   <modules>

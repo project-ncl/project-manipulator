@@ -17,9 +17,13 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.jboss.pnc.projectmanipulator.core.ManipulationException;
 import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
@@ -28,13 +32,9 @@ import org.jboss.pnc.projectmanipulator.core.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class NpmManipulationSession implements ManipulationSession<NpmResult> {
 

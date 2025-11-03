@@ -17,10 +17,10 @@
  */
 package org.jboss.pnc.projectmanipulator.npm.da;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class NVSchema {
 

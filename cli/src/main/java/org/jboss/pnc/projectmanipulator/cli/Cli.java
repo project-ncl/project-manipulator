@@ -17,11 +17,6 @@
  */
 package org.jboss.pnc.projectmanipulator.cli;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.FileAppender;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.File;
@@ -32,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import com.redhat.resilience.otel.OTelCLIHelper;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -47,6 +41,14 @@ import org.jboss.pnc.projectmanipulator.npm.NpmManipulationSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import com.redhat.resilience.otel.OTelCLIHelper;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.FileAppender;
 
 public class Cli {
 

@@ -17,7 +17,7 @@
  */
 package org.jboss.pnc.projectmanipulator.npm.da;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ErrorMessage {
 

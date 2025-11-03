@@ -17,13 +17,6 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
-import org.jboss.pnc.projectmanipulator.core.Manipulator;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
+import org.jboss.pnc.projectmanipulator.core.Manipulator;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Manipulator} implementation that can modify an NPM project's dependencies and devDependencies with provided

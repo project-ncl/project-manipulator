@@ -17,12 +17,12 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
-import org.jboss.pnc.projectmanipulator.core.Manipulator;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+import static org.apache.commons.lang3.StringUtils.substring;
+import static org.apache.commons.lang3.math.NumberUtils.createInteger;
+import static org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,12 +35,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNumeric;
-import static org.apache.commons.lang3.StringUtils.leftPad;
-import static org.apache.commons.lang3.StringUtils.substring;
-import static org.apache.commons.lang3.math.NumberUtils.createInteger;
-import static org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
+import org.jboss.pnc.projectmanipulator.core.Manipulator;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Manipulator} implementation that can modify an NPM project's version with either static or calculated,

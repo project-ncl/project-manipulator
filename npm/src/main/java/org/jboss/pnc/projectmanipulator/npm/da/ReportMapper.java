@@ -17,18 +17,18 @@
  */
 package org.jboss.pnc.projectmanipulator.npm.da;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.zafarkhaja.semver.Version;
-
-import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.zafarkhaja.semver.Version;
 
 public class ReportMapper implements ReportObjectMapper {
 

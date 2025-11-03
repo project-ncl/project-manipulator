@@ -17,12 +17,7 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
-import org.jboss.pnc.projectmanipulator.core.Manipulator;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +26,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
+import org.jboss.pnc.projectmanipulator.core.Manipulator;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Manipulator} implementation that can modify an NPM package scope.

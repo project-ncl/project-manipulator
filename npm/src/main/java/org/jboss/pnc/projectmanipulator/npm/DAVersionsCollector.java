@@ -17,28 +17,10 @@
  */
 package org.jboss.pnc.projectmanipulator.npm;
 
-import com.github.zafarkhaja.semver.Version;
-import kong.unirest.HttpResponse;
-import kong.unirest.ObjectMapper;
-import kong.unirest.Unirest;
-import kong.unirest.UnirestException;
-
-import com.redhat.resilience.otel.OTelCLIHelper;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanContext;
-import org.apache.commons.codec.binary.Base32;
-import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
-import org.jboss.pnc.projectmanipulator.core.ManipulationException;
-import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
-import org.jboss.pnc.projectmanipulator.core.Manipulator;
-import org.jboss.pnc.projectmanipulator.core.Project;
-import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
-import org.jboss.pnc.projectmanipulator.npm.da.DAException;
-import org.jboss.pnc.projectmanipulator.npm.da.ReportObjectMapper;
-import org.jboss.pnc.projectmanipulator.npm.da.ReportMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,10 +36,29 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
+import org.apache.commons.codec.binary.Base32;
+import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
+import org.jboss.pnc.projectmanipulator.core.ManipulationException;
+import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
+import org.jboss.pnc.projectmanipulator.core.Manipulator;
+import org.jboss.pnc.projectmanipulator.core.Project;
+import org.jboss.pnc.projectmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
+import org.jboss.pnc.projectmanipulator.npm.da.DAException;
+import org.jboss.pnc.projectmanipulator.npm.da.ReportMapper;
+import org.jboss.pnc.projectmanipulator.npm.da.ReportObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import com.github.zafarkhaja.semver.Version;
+import com.redhat.resilience.otel.OTelCLIHelper;
+
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import kong.unirest.HttpResponse;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 
 /**
  * This Manipulator collects data from an external service while doesn't do any manipulations to the project

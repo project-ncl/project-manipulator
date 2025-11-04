@@ -45,7 +45,10 @@ You can specify java system properties in the CLI by using `-D<prop>=<value>`
 | manipulation.disable | default: false, specify whether you want to disable the manipulation of the version or not |
 | dependencyOverride.$package_name | Desired version(s) to apply to the specified package(s), if listed inside the _dependencies_ in package.json. Does not replace the values in lock files. Example: `-DdependencyOverride.keycloak-admin-client=^0.12.0 -DdependencyOverride.async=1.5.2`|
 | devDependencyOverride.$package_name | Desired version(s) to apply to the specified package(s), if listed inside the _devDependencies_ in package.json. Does not replace the values in lock files. Example: `-DdevDependencyOverride.keycloak-admin-client=^0.12.0`|
+| preScript | Run a shell script before manipulation. Accepts file:// or http:// URLs. |
+| postScript | Run a shell script after manipulation. Accepts file:// or http:// URLs. |
 
+Note: If this tool is running in the context of a [PNC Reqour](https://github.com/project-ncl/reqour/) environment any changes made via the shell script pre/post functionality will be committed back to SCM.
 
 ### OpenTelemetry Instrumentation
 

@@ -17,7 +17,7 @@
  */
 package org.jboss.pnc.projectmanipulator.npm.da;
 
-import com.mashape.unirest.http.ObjectMapper;
+import kong.unirest.ObjectMapper;
 
 public interface ReportObjectMapper extends ObjectMapper {
 

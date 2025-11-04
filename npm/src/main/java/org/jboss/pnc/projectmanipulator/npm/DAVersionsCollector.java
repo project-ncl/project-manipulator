@@ -18,10 +18,10 @@
 package org.jboss.pnc.projectmanipulator.npm;
 
 import com.github.zafarkhaja.semver.Version;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.HttpResponse;
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 
 import com.redhat.resilience.otel.OTelCLIHelper;
 import io.opentelemetry.api.trace.Span;
@@ -224,8 +224,10 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
         // If not specified via properties, the values will be increased by default to 30 seconds for the first and 10
         // minutes
         // for the second.
-        Unirest.setTimeouts(connectionTimeout * 1000, socketTimeout * 1000);
-        Unirest.setObjectMapper(objectMapper);
+        Unirest.config()
+                .socketTimeout((int) socketTimeout * 1000)
+                .connectTimeout((int) connectionTimeout * 1000)
+                .setObjectMapper(objectMapper);
     }
 
     private Map<NpmPackageRef, List<String>> getExistingVersions(ArrayList<NpmPackageRef> restParam) {

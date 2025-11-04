@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * {@link Manipulator} implementation that can modify an NPM package scope.

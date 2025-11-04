@@ -21,10 +21,14 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.apache.commons.cli.CommandLine;
@@ -34,6 +38,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.jboss.pnc.projectmanipulator.core.ManipulationException;
 import org.jboss.pnc.projectmanipulator.core.ManipulationManager;
 import org.jboss.pnc.projectmanipulator.core.ManipulationSession;
@@ -42,6 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import com.ongres.process.FluentProcess;
+import com.ongres.process.FluentProcessBuilder;
+import com.ongres.process.Output;
 import com.redhat.resilience.otel.OTelCLIHelper;
 
 import ch.qos.logback.classic.Level;
@@ -58,7 +66,7 @@ public class Cli {
     private ManipulationSession session;
 
     @SuppressWarnings("rawtypes")
-    private ManipulationManager manipulationManager = new ManipulationManager<>();
+    private final ManipulationManager manipulationManager = new ManipulationManager<>();
 
     /** Properties a user may define on the command line. */
     private Properties userProps;
@@ -182,6 +190,13 @@ public class Cli {
         }
 
         try {
+            if (userProps.containsKey("preScript")) {
+                // Value is a comma separated list of URLs
+                final String[] scripts = userProps.getProperty("preScript").split(",");
+                final List<File> resolvedScripts = resolveScripts(scripts);
+                resolvedScripts.forEach(this::executeScript);
+            }
+
             String endpoint = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
             String service = System.getenv("OTEL_SERVICE_NAME");
             if (endpoint != null) {
@@ -196,6 +211,13 @@ public class Cli {
             }
             manipulationManager.init(session);
             manipulationManager.scanAndApply(session);
+
+            if (userProps.containsKey("postScript")) {
+                // Value is a comma separated list of URLs
+                final String[] scripts = userProps.getProperty("postScript").split(",");
+                final List<File> resolvedScripts = resolveScripts(scripts);
+                resolvedScripts.forEach(this::executeScript);
+            }
         } catch (ManipulationException ex) {
             logger.error("Project Manipulation failed; original error is: {}", ex.getMessage());
             logger.debug("Project Manipulation error trace is", ex);
@@ -237,5 +259,41 @@ public class Cli {
         }
 
         return result;
+    }
+
+    List<File> resolveScripts(String[] scripts) throws IOException {
+        final List<File> results = new ArrayList<>(scripts.length);
+        for (final String script : scripts) {
+            logger.info("Attempting to read URL {}", script);
+            URL ref = new URL(script);
+            File result;
+            if (!"file".equals(ref.getProtocol())) {
+                result = Files.createTempFile(UUID.randomUUID().toString(), null).toFile();
+                FileUtils.copyURLToFile(ref, result);
+            } else {
+                result = new File(ref.getPath());
+            }
+            results.add(result);
+        }
+        return results;
+    }
+
+    void executeScript(File resolvedScript) {
+        // https://gitlab.com/ongresinc/fluent-process
+        FluentProcessBuilder builder = new FluentProcessBuilder(resolvedScript.toString())
+                .allowedExitCode(0)
+                .dontCloseAfterLast();
+        try (FluentProcess process = builder.start()) {
+            Output output = process.tryGet();
+            if (output.error().isPresent()) {
+                logger.error(output.error().get());
+            }
+            if (output.output().isPresent()) {
+                logger.info(output.output().get());
+            }
+            if (output.exception().isPresent()) {
+                throw new RuntimeException("Problem executing script", output.exception().get());
+            }
+        }
     }
 }

@@ -192,9 +192,7 @@ public class Cli {
         try {
             if (userProps.containsKey("preScript")) {
                 // Value is a comma separated list of URLs
-                final String[] scripts = userProps.getProperty("preScript").split(",");
-                final List<File> resolvedScripts = resolveScripts(scripts);
-                resolvedScripts.forEach(this::executeScript);
+                resolveScripts(userProps.getProperty("preScript").split(",")).forEach(this::executeScript);
             }
 
             String endpoint = System.getenv("OTEL_EXPORTER_OTLP_ENDPOINT");
@@ -214,9 +212,7 @@ public class Cli {
 
             if (userProps.containsKey("postScript")) {
                 // Value is a comma separated list of URLs
-                final String[] scripts = userProps.getProperty("postScript").split(",");
-                final List<File> resolvedScripts = resolveScripts(scripts);
-                resolvedScripts.forEach(this::executeScript);
+                resolveScripts(userProps.getProperty("postScript").split(",")).forEach(this::executeScript);
             }
         } catch (ManipulationException ex) {
             logger.error("Project Manipulation failed; original error is: {}", ex.getMessage());
@@ -280,6 +276,7 @@ public class Cli {
 
     void executeScript(File resolvedScript) {
         // https://gitlab.com/ongresinc/fluent-process
+        logger.info("Executing script {}", resolvedScript);
         FluentProcessBuilder builder = new FluentProcessBuilder(resolvedScript.toString())
                 .allowedExitCode(0)
                 .dontCloseAfterLast();

@@ -52,6 +52,11 @@
     </dependency>
 
     <dependency>
+      <groupId>com.ongres</groupId>
+      <artifactId>fluent-process</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
@@ -74,6 +79,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-core</artifactId>
     </dependency>
   </dependencies>
 

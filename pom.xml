@@ -185,6 +185,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.ongres</groupId>
+        <artifactId>fluent-process</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.redhat.resilience.otel</groupId>
         <artifactId>opentelemetry-ext-cli-java</artifactId>
         <version>1.4.0</version>
@@ -200,6 +206,12 @@
         <groupId>org.hamcrest</groupId>
         <artifactId>hamcrest-all</artifactId>
         <version>${version.hamcrest}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>uk.org.webcompere</groupId>
+        <artifactId>system-stubs-core</artifactId>
+        <version>2.1.8</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -311,30 +323,6 @@
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.22</version>
-        <executions>
-          <execution>
-            <id>check-java-api</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <!-- It needs to run after class compilation. No need to include test classes -->
-            <!-- as it does not support it: https://github.com/mojohaus/animal-sniffer/issues/5 -->
-            <phase>process-classes</phase>
-            <configuration>
-              <ignoreDependencies>true</ignoreDependencies>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java18</artifactId>
-                <version>1.0</version>
-              </signature>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>

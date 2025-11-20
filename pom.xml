@@ -235,60 +235,11 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>2.6</version>
-          <configuration>
-            <escapeString>\</escapeString>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>2.4.1</version>
-          <configuration>
-            <archive>
-              <index>true</index>
-              <manifest>
-                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              </manifest>
-              <manifestEntries>
-                <Implementation-URL>${project.url}</Implementation-URL>
-                <Java-Version>${java.version}</Java-Version>
-                <Java-Vendor>${java.vendor}</Java-Vendor>
-                <Os-Name>${os.name}</Os-Name>
-                <Os-Arch>${os.arch}</Os-Arch>
-                <Os-Version>${os.version}</Os-Version>
-                <Scm-Url>${project.scm.url}</Scm-Url>
-                <Scm-Connection>${project.scm.connection}</Scm-Connection>
-                <Scm-Revision>${buildNumber}</Scm-Revision>
-                <Build-Timestamp>${datetime}</Build-Timestamp>
-              </manifestEntries>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.8</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.9.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.4</version>
           <configuration>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>com.soebes.maven.plugins</groupId>
-          <artifactId>iterator-maven-plugin</artifactId>
-          <version>0.3</version>
         </plugin>
         <plugin>
           <groupId>com.mycila</groupId>
@@ -372,7 +323,7 @@
       <plugin>
         <groupId>org.sonatype.central</groupId>
         <artifactId>central-publishing-maven-plugin</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
         <extensions>true</extensions>
         <configuration>
           <!-- as defined in your settings.xml -->

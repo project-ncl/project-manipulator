@@ -22,12 +22,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.pnc.project-manipulator</groupId>
-    <artifactId>project-manipulator-parent</artifactId>
+    <groupId>org.jboss.pnc.npm-manipulator</groupId>
+    <artifactId>npm-manipulator-parent</artifactId>
     <version>1.2.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>project-manipulator-core</artifactId>
+  <artifactId>npm-manipulator-core</artifactId>
 
   <name>Project Manipulator Core</name>
 

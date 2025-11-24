@@ -91,7 +91,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
             if (pkg.isFile()) {
                 if ("package.json".equals(pkg.getName())) {
                     packageFile = pkg;
-                } else if ("impl-shrinkwrap.json".equals(pkg.getName())) {
+                } else if ("npm-shrinkwrap.json".equals(pkg.getName())) {
                     packageLock = pkg;
                 } else if ("package-lock.json".equals(pkg.getName())) {
                     packageLock = pkg;
@@ -106,7 +106,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
                 packageFile = new File(packageDirPath + File.separator + "package.json");
             }
             if (packageLock == null) {
-                packageLock = new File(packageDirPath + File.separator + "impl-shrinkwrap.json");
+                packageLock = new File(packageDirPath + File.separator + "npm-shrinkwrap.json");
                 if (!packageLock.exists()) {
                     packageLock = new File(packageDirPath + File.separator + "package-lock.json");
                     if (!packageLock.exists()) {

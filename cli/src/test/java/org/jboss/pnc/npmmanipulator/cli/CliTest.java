@@ -27,14 +27,14 @@ public class CliTest {
 
         String[] toTest = new String[2];
         toTest[0] = "file://" + target.getAbsolutePath();
-        toTest[1] = "https://raw.githubusercontent.com/project-ncl/project-manipulator/refs/heads/master/README.md";
+        toTest[1] = "https://raw.githubusercontent.com/project-ncl/npm-manipulator/refs/heads/master/README.md";
 
         List<File> result = cli.resolveScripts(toTest);
         assertEquals(result.get(0), target);
         assertTrue(
                 FileUtils.readFileToString(result.get(1), Charset.defaultCharset())
                         .contains(
-                                "Project Manipulator is a tool used to manipulate project definition files. Current focus is on NPM support"));
+                                "Various manipulations can be performed on a project and their execution can be controlled by provided arguments"));
     }
 
     @Test

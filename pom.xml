@@ -34,7 +34,7 @@
 
   <name>Project Manipulator for NPM</name>
   <description>Manipulation Tool for NPM that allows pre-processing of project definition files (package.json).</description>
-  <url>https://github.com/project-ncl/project-manipulator</url>
+  <url>https://github.com/project-ncl/npm-manipulator</url>
   <inceptionYear>2018</inceptionYear>
 
   <licenses>
@@ -59,10 +59,10 @@
   </modules>
 
   <scm>
-    <connection>scm:git:https://github.com/project-ncl/project-manipulator.git</connection>
-    <developerConnection>scm:git:git@github.com:project-ncl/project-manipulator.git</developerConnection>
+    <connection>scm:git:https://github.com/project-ncl/npm-manipulator.git</connection>
+    <developerConnection>scm:git:git@github.com:project-ncl/npm-manipulator.git</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/project-ncl/project-manipulator</url>
+    <url>https://github.com/project-ncl/npm-manipulator</url>
   </scm>
 
   <properties>

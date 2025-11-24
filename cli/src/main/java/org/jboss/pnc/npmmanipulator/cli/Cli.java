@@ -184,7 +184,7 @@ public class Cli {
         }
 
         if (!projectFile.exists()) {
-            logger.info("Project Manipulation failed. File {} cannot be found.", projectFile);
+            logger.info("NPM Manipulation failed. File {} cannot be found.", projectFile);
             return 10;
         }
 
@@ -198,7 +198,7 @@ public class Cli {
             String service = System.getenv("OTEL_SERVICE_NAME");
             if (endpoint != null) {
                 if (service == null) {
-                    service = "impl-project-manipulator";
+                    service = "npm-project-manipulator";
                 }
                 logger.info("Enabling OpenTelemetry collection on {} with service name {}", endpoint, service);
                 OTelCLIHelper.startOTel(

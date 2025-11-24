@@ -32,6 +32,6 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:project-ncl/project-manipulator.git"
+		"url": "git@github.com:project-ncl/npm-manipulator.git"
 	}
 }

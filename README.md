@@ -1,8 +1,6 @@
-# project-manipulator
+# npm-manipulator
 
-Project Manipulator is a tool used to manipulate project definition files. Current focus is on NPM support, but other formats can be added in the future.
-Various manipulations can be performed on a project and their execution can be controlled by provided arguments.
-
+NPM Manipulator is a tool used to manipulate NPM project definition files. Various manipulations can be performed on a project and their execution can be controlled by provided arguments.
 
 # Usage
 
@@ -22,7 +20,7 @@ usage: ...
 ```
 e.g.
 ```
-java -jar project-manipulator-cli.jar -f npm-project/package.json
+java -jar npm-manipulator-cli.jar -f npm-project/package.json
 ```
 
 # Java Properties

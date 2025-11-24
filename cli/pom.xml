@@ -22,23 +22,23 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.pnc.project-manipulator</groupId>
-    <artifactId>project-manipulator-parent</artifactId>
+    <groupId>org.jboss.pnc.npm-manipulator</groupId>
+    <artifactId>npm-manipulator-parent</artifactId>
     <version>1.2.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>project-manipulator-cli</artifactId>
+  <artifactId>npm-manipulator-cli</artifactId>
 
   <name>Project Manipulator CLI</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.pnc.project-manipulator</groupId>
-      <artifactId>project-manipulator-core</artifactId>
+      <groupId>org.jboss.pnc.npm-manipulator</groupId>
+      <artifactId>npm-manipulator-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.pnc.project-manipulator</groupId>
-      <artifactId>project-manipulator-npm</artifactId>
+      <groupId>org.jboss.pnc.npm-manipulator</groupId>
+      <artifactId>npm-manipulator-npm</artifactId>
     </dependency>
 
     <!-- External dependencies -->
@@ -116,7 +116,7 @@
           <archive>
             <index>true</index>
             <manifest>
-              <mainClass>org.jboss.pnc.projectmanipulator.cli.Cli</mainClass>
+              <mainClass>org.jboss.pnc.npmmanipulator.cli.Cli</mainClass>
             </manifest>
           </archive>
           <descriptors>

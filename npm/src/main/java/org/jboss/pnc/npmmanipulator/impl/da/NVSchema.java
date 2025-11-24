@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm.da;
+package org.jboss.pnc.npmmanipulator.impl.da;
 
 import java.util.List;
 import java.util.Map;

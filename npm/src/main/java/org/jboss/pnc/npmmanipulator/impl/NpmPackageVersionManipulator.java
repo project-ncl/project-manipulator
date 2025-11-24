@@ -15,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.leftPad;
 import static org.apache.commons.lang3.StringUtils.substring;
 import static org.apache.commons.lang3.math.NumberUtils.createInteger;
-import static org.jboss.pnc.npmmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
+import static org.jboss.pnc.npmmanipulator.impl.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,10 +35,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.ManipulationSession;
-import org.jboss.pnc.npmmanipulator.core.Manipulator;
-import org.jboss.pnc.npmmanipulator.core.Project;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationSession;
+import org.jboss.pnc.npmmanipulator.api.Manipulator;
+import org.jboss.pnc.npmmanipulator.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

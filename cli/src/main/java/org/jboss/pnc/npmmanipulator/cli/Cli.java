@@ -39,10 +39,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.ManipulationManager;
-import org.jboss.pnc.npmmanipulator.core.ManipulationSession;
-import org.jboss.pnc.npmmanipulator.npm.NpmManipulationSessionFactory;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationSession;
+import org.jboss.pnc.npmmanipulator.impl.NpmManipulationSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -199,7 +198,7 @@ public class Cli {
             String service = System.getenv("OTEL_SERVICE_NAME");
             if (endpoint != null) {
                 if (service == null) {
-                    service = "npm-project-manipulator";
+                    service = "impl-project-manipulator";
                 }
                 logger.info("Enabling OpenTelemetry collection on {} with service name {}", endpoint, service);
                 OTelCLIHelper.startOTel(

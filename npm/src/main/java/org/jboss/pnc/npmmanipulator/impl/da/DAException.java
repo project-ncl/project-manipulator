@@ -15,18 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.core;
+package org.jboss.pnc.npmmanipulator.impl.da;
 
-/**
- * Represents a generic project.
- */
-public interface Project {
+public class DAException extends RuntimeException {
 
-    /**
-     * Updates the project file by manipulated contents.
-     *
-     * @throws ManipulationException in case of an update failure
-     */
-    void update() throws ManipulationException;
+    public DAException(String message) {
+        super(message);
+    }
+
+    public DAException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.core;
+package org.jboss.pnc.npmmanipulator.api;
 
 import org.slf4j.helpers.MessageFormatter;
 

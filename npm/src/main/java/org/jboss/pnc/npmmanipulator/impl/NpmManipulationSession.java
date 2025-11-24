@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.ManipulationSession;
-import org.jboss.pnc.npmmanipulator.core.Manipulator;
-import org.jboss.pnc.npmmanipulator.core.Project;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationSession;
+import org.jboss.pnc.npmmanipulator.api.Manipulator;
+import org.jboss.pnc.npmmanipulator.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +91,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
             if (pkg.isFile()) {
                 if ("package.json".equals(pkg.getName())) {
                     packageFile = pkg;
-                } else if ("npm-shrinkwrap.json".equals(pkg.getName())) {
+                } else if ("impl-shrinkwrap.json".equals(pkg.getName())) {
                     packageLock = pkg;
                 } else if ("package-lock.json".equals(pkg.getName())) {
                     packageLock = pkg;
@@ -106,7 +106,7 @@ public class NpmManipulationSession implements ManipulationSession<NpmResult> {
                 packageFile = new File(packageDirPath + File.separator + "package.json");
             }
             if (packageLock == null) {
-                packageLock = new File(packageDirPath + File.separator + "npm-shrinkwrap.json");
+                packageLock = new File(packageDirPath + File.separator + "impl-shrinkwrap.json");
                 if (!packageLock.exists()) {
                     packageLock = new File(packageDirPath + File.separator + "package-lock.json");
                     if (!packageLock.exists()) {

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

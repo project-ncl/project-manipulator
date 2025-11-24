@@ -18,7 +18,7 @@
 /**
  *
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

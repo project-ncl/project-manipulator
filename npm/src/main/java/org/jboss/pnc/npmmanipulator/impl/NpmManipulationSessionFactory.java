@@ -15,24 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm.da;
+package org.jboss.pnc.npmmanipulator.impl;
 
-import org.apache.commons.lang3.StringUtils;
+import java.io.File;
+import java.util.Properties;
 
-public class ErrorMessage {
+public class NpmManipulationSessionFactory {
 
-    public final String errorType;
-
-    public final String errorMessage;
-
-    public final String details;
-
-    public ErrorMessage() {
-        details = errorMessage = errorType = StringUtils.EMPTY;
+    public static NpmManipulationSession createSession(
+            File projectFile,
+            File resultFile,
+            Properties properties,
+            Properties userProps) {
+        return new NpmManipulationSession(projectFile, resultFile, properties, userProps);
     }
 
-    @Override
-    public String toString() {
-        return errorType + " " + errorMessage + " " + details;
-    }
 }

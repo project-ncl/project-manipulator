@@ -15,18 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm.da;
+package org.jboss.pnc.npmmanipulator.impl.da;
 
-import kong.unirest.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 
-public interface ReportObjectMapper extends ObjectMapper {
+public class ErrorMessage {
+
+    public final String errorType;
+
+    public final String errorMessage;
+
+    public final String details;
+
+    public ErrorMessage() {
+        details = errorMessage = errorType = StringUtils.EMPTY;
+    }
 
     @Override
-    <T> T readValue(String s, Class<T> c);
-
-    @Override
-    String writeValue(Object value);
-
-    String getErrorString();
-
+    public String toString() {
+        return errorType + " " + errorMessage + " " + details;
+    }
 }

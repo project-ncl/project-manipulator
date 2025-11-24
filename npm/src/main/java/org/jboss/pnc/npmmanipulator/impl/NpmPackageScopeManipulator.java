@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.ManipulationSession;
-import org.jboss.pnc.npmmanipulator.core.Manipulator;
-import org.jboss.pnc.npmmanipulator.core.Project;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationSession;
+import org.jboss.pnc.npmmanipulator.api.Manipulator;
+import org.jboss.pnc.npmmanipulator.api.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

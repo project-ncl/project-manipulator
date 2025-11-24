@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import java.util.Map;
 
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.Project;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.Project;
 
 public interface NpmPackage extends Project {
 

@@ -15,16 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm.da;
+package org.jboss.pnc.npmmanipulator.impl.da;
 
-public class DAException extends RuntimeException {
+import kong.unirest.ObjectMapper;
 
-    public DAException(String message) {
-        super(message);
-    }
+public interface ReportObjectMapper extends ObjectMapper {
 
-    public DAException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    @Override
+    <T> T readValue(String s, Class<T> c);
+
+    @Override
+    String writeValue(Object value);
+
+    String getErrorString();
 
 }

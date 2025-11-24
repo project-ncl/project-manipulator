@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.impl;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.jboss.pnc.npmmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
+import static org.jboss.pnc.npmmanipulator.impl.NpmPackageVersionManipulator.VersioningStrategy.SEMVER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,14 +38,14 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base32;
 import org.commonjava.atlas.npm.ident.ref.NpmPackageRef;
-import org.jboss.pnc.npmmanipulator.core.ManipulationException;
-import org.jboss.pnc.npmmanipulator.core.ManipulationSession;
-import org.jboss.pnc.npmmanipulator.core.Manipulator;
-import org.jboss.pnc.npmmanipulator.core.Project;
-import org.jboss.pnc.npmmanipulator.npm.NpmPackageVersionManipulator.VersioningStrategy;
-import org.jboss.pnc.npmmanipulator.npm.da.DAException;
-import org.jboss.pnc.npmmanipulator.npm.da.ReportMapper;
-import org.jboss.pnc.npmmanipulator.npm.da.ReportObjectMapper;
+import org.jboss.pnc.npmmanipulator.api.ManipulationException;
+import org.jboss.pnc.npmmanipulator.api.ManipulationSession;
+import org.jboss.pnc.npmmanipulator.api.Manipulator;
+import org.jboss.pnc.npmmanipulator.api.Project;
+import org.jboss.pnc.npmmanipulator.impl.NpmPackageVersionManipulator.VersioningStrategy;
+import org.jboss.pnc.npmmanipulator.impl.da.DAException;
+import org.jboss.pnc.npmmanipulator.impl.da.ReportMapper;
+import org.jboss.pnc.npmmanipulator.impl.da.ReportObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -233,7 +233,7 @@ public class DAVersionsCollector implements Manipulator<NpmResult> {
 
     private Map<NpmPackageRef, List<String>> getExistingVersions(ArrayList<NpmPackageRef> restParam) {
         ReportMapper mapper = new ReportMapper(true, mode);
-        String endpoint = "reports/versions/npm";
+        String endpoint = "reports/versions/impl";
         return getAvailableVersions(restParam, mapper, endpoint);
     }
 

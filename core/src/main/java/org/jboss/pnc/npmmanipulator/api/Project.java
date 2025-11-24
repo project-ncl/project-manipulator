@@ -15,19 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.npmmanipulator.npm;
+package org.jboss.pnc.npmmanipulator.api;
 
-import java.io.File;
-import java.util.Properties;
+/**
+ * Represents a generic project.
+ */
+public interface Project {
 
-public class NpmManipulationSessionFactory {
-
-    public static NpmManipulationSession createSession(
-            File projectFile,
-            File resultFile,
-            Properties properties,
-            Properties userProps) {
-        return new NpmManipulationSession(projectFile, resultFile, properties, userProps);
-    }
+    /**
+     * Updates the project file by manipulated contents.
+     *
+     * @throws ManipulationException in case of an update failure
+     */
+    void update() throws ManipulationException;
 
 }

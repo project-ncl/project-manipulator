@@ -22,19 +22,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.jboss.pnc.project-manipulator</groupId>
-    <artifactId>project-manipulator-parent</artifactId>
+    <groupId>org.jboss.pnc.npm-manipulator</groupId>
+    <artifactId>npm-manipulator-parent</artifactId>
     <version>1.2.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>project-manipulator-npm</artifactId>
+  <artifactId>npm-manipulator-npm</artifactId>
 
   <name>Project Manipulator NPM</name>
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.pnc.project-manipulator</groupId>
-      <artifactId>project-manipulator-core</artifactId>
+      <groupId>org.jboss.pnc.npm-manipulator</groupId>
+      <artifactId>npm-manipulator-core</artifactId>
     </dependency>
 
     <!-- External dependencies -->

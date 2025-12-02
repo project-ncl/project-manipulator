@@ -1,1 +1,1 @@
-Changelog is now at (https://github.com/project-ncl/project-manipulator/wiki/Changelog)
+Changelog is now at (https://github.com/project-ncl/npm-manipulator/wiki/Changelog)
